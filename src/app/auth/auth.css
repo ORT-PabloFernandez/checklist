@@ -1,0 +1,244 @@
+/* Estilos para la página de login */
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9fafb;
+    padding: 3rem 1rem;
+  }
+  
+  .auth-card {
+    max-width: 28rem;
+    width: 100%;
+    margin: 0 auto;
+  }
+  
+  .auth-title {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: #111827;
+  }
+  
+  .auth-form {
+    margin-top: 2rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .input-field {
+    appearance: none;
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    color: #111827;
+    font-size: 0.875rem;
+  }
+  
+  .input-field:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 1px #6366f1;
+    z-index: 10;
+  }
+  
+  .input-field::placeholder {
+    color: #9ca3af;
+  }
+  
+  .input-field:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .input-field.top {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  
+  .input-field.bottom {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top: none;
+  }
+  
+  .error-alert {
+    background-color: #fee2e2;
+    border: 1px solid #f87171;
+    color: #b91c1c;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+  }
+  
+  .submit-button {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    color: white;
+    background-color: #4f46e5;
+  }
+  
+  .submit-button:hover {
+    background-color: #4338ca;
+  }
+  
+  .submit-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #f9fafb, 0 0 0 4px #6366f1;
+  }
+  
+  .submit-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Estilos para las páginas de login y signup */
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9fafb;
+    padding: 3rem 1rem;
+  }
+  
+  .auth-card {
+    max-width: 28rem;
+    width: 100%;
+    margin: 0 auto;
+  }
+  
+  .auth-title {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: #111827;
+  }
+  
+  .auth-form {
+    margin-top: 2rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .input-field {
+    appearance: none;
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    color: #111827;
+    font-size: 0.875rem;
+  }
+  
+  .input-field:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 1px #6366f1;
+    z-index: 10;
+  }
+  
+  .input-field::placeholder {
+    color: #9ca3af;
+  }
+  
+  .input-field:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .input-field.top {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  
+  .input-field.middle {
+    border-radius: 0;
+    border-top: none;
+  }
+  
+  .input-field.bottom {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top: none;
+  }
+  
+  .error-alert {
+    background-color: #fee2e2;
+    border: 1px solid #f87171;
+    color: #b91c1c;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+  }
+  
+  .submit-button {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    color: white;
+    background-color: #4f46e5;
+  }
+  
+  .submit-button:hover {
+    background-color: #4338ca;
+  }
+  
+  .submit-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #f9fafb, 0 0 0 4px #6366f1;
+  }
+  
+  .submit-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .text-sm {
+    font-size: 0.875rem;
+  }
+  
+  .text-gray-600 {
+    color: #4b5563;
+  }
+  
+  .link {
+    font-weight: 500;
+    color: #4f46e5;
+  }
+  
+  .link:hover {
+    color: #4338ca;
+  }
+  

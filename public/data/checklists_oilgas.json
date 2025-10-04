@@ -1,0 +1,468 @@
+{
+    "version": "1.0",
+    "dominio": "Oil & Gas - Campo",
+    "descripcion": "Paquete de 5 checklists operativos con validaciones y campos condicionales.",
+    "checklists": [
+      {
+        "nombre": "Inspección diaria de pozo en operación",
+        "objetivo": "Verificar condiciones generales de un pozo activo para asegurar continuidad y seguridad.",
+        "pasos": [
+          {
+            "id": 1,
+            "descripcion": "Medir presión en boca de pozo",
+            "tipo_campo": "numero",
+            "unidad": "PSI",
+            "obligatorio": true,
+            "validacion": {
+              "min": 0,
+              "max": 15000
+            }
+          },
+          {
+            "id": 2,
+            "descripcion": "Registrar tasa de producción de fluidos",
+            "tipo_campo": "numero",
+            "unidad": "barriles/día",
+            "obligatorio": true,
+            "validacion": {
+              "min": 0,
+              "max": 100000
+            }
+          },
+          {
+            "id": 3,
+            "descripcion": "Verificación de fugas visibles (gas/fluido)",
+            "tipo_campo": "select",
+            "valores": [
+              "Sin fugas",
+              "Con fugas"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 4,
+            "descripcion": "Adjuntar evidencia de fuga (si aplica)",
+            "tipo_campo": "foto",
+            "obligatorio": false,
+            "condicional": {
+              "cuando": {
+                "paso_id": 3,
+                "igual_a": "Con fugas"
+              }
+            }
+          },
+          {
+            "id": 5,
+            "descripcion": "Observaciones de la fuga (si aplica)",
+            "tipo_campo": "texto",
+            "obligatorio": false,
+            "validacion": {
+              "max_len": 1000
+            },
+            "condicional": {
+              "cuando": {
+                "paso_id": 3,
+                "igual_a": "Con fugas"
+              }
+            }
+          },
+          {
+            "id": 6,
+            "descripcion": "Estado de válvulas maestras (según procedimiento)",
+            "tipo_campo": "select",
+            "valores": [
+              "Abiertas",
+              "Cerradas",
+              "No aplica"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 7,
+            "descripcion": "Estado del sistema de venteo y antorcha",
+            "tipo_campo": "select",
+            "valores": [
+              "Operativo",
+              "No operativo"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 8,
+            "descripcion": "Crear registro de desvío si el sistema de venteo/antorcha no es operativo",
+            "tipo_campo": "checkbox",
+            "valores": [
+              "Desvío creado"
+            ],
+            "obligatorio": false,
+            "condicional": {
+              "cuando": {
+                "paso_id": 7,
+                "igual_a": "No operativo"
+              }
+            }
+          },
+          {
+            "id": 9,
+            "descripcion": "Disponibilidad de equipos de emergencia (extintores, kit derrames)",
+            "tipo_campo": "select",
+            "valores": [
+              "Disponible",
+              "No disponible"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 10,
+            "descripcion": "Firma del supervisor de campo",
+            "tipo_campo": "firma",
+            "obligatorio": true
+          }
+        ]
+      },
+      {
+        "nombre": "Integridad mecánica de pozo",
+        "objetivo": "Confirmar que los componentes mecánicos del pozo están en condiciones seguras y operables.",
+        "pasos": [
+          {
+            "id": 1,
+            "descripcion": "Inspección visual de cabezal: corrosión/fisuras",
+            "tipo_campo": "select",
+            "valores": [
+              "Sin anomalías",
+              "Con anomalías"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 2,
+            "descripcion": "Adjuntar foto del cabezal (si hay anomalías)",
+            "tipo_campo": "foto",
+            "obligatorio": false,
+            "condicional": {
+              "cuando": {
+                "paso_id": 1,
+                "igual_a": "Con anomalías"
+              }
+            }
+          },
+          {
+            "id": 3,
+            "descripcion": "Verificación de pernos y bridas (torque)",
+            "tipo_campo": "numero",
+            "unidad": "N·m",
+            "obligatorio": true,
+            "validacion": {
+              "min": 0,
+              "max": 20000
+            }
+          },
+          {
+            "id": 4,
+            "descripcion": "Prueba de funcionamiento de SSSV (válvula de seguridad superficial)",
+            "tipo_campo": "select",
+            "valores": [
+              "Funciona",
+              "No funciona"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 5,
+            "descripcion": "Generar NCR si SSSV no funciona",
+            "tipo_campo": "checkbox",
+            "valores": [
+              "NCR generado"
+            ],
+            "obligatorio": false,
+            "condicional": {
+              "cuando": {
+                "paso_id": 4,
+                "igual_a": "No funciona"
+              }
+            }
+          },
+          {
+            "id": 6,
+            "descripcion": "Registro de prueba de presión más reciente adjunto",
+            "tipo_campo": "archivo",
+            "valores": [
+              "PDF",
+              "Imagen"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 7,
+            "descripcion": "Observaciones y anomalías detectadas",
+            "tipo_campo": "texto",
+            "obligatorio": false,
+            "validacion": {
+              "max_len": 1500
+            }
+          },
+          {
+            "id": 8,
+            "descripcion": "Validación por ingeniero de integridad",
+            "tipo_campo": "firma",
+            "obligatorio": true
+          }
+        ]
+      },
+      {
+        "nombre": "Inspección de seguridad en área de pozo",
+        "objetivo": "Controlar condiciones de seguridad, señalización, medio ambiente y equipos de emergencia en la locación.",
+        "pasos": [
+          {
+            "id": 1,
+            "descripcion": "Delimitación y señalización del área",
+            "tipo_campo": "select",
+            "valores": [
+              "Correcta",
+              "Incorrecta"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 2,
+            "descripcion": "Uso de EPP por todo el personal",
+            "tipo_campo": "select",
+            "valores": [
+              "Cumple",
+              "No cumple"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 3,
+            "descripcion": "Adjuntar foto si no se cumple uso de EPP",
+            "tipo_campo": "foto",
+            "obligatorio": false,
+            "condicional": {
+              "cuando": {
+                "paso_id": 2,
+                "igual_a": "No cumple"
+              }
+            }
+          },
+          {
+            "id": 4,
+            "descripcion": "Estado de tableros eléctricos y cableado visible",
+            "tipo_campo": "select",
+            "valores": [
+              "Seguro",
+              "No seguro"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 5,
+            "descripcion": "Detectores de gas funcionales y calibrados - fecha de última calibración",
+            "tipo_campo": "fecha",
+            "obligatorio": true,
+            "validacion": {
+              "no_futuras": true,
+              "max_antiguedad_dias": 365
+            }
+          },
+          {
+            "id": 6,
+            "descripcion": "Gestión de residuos peligrosos (contenedores adecuados)",
+            "tipo_campo": "select",
+            "valores": [
+              "Adecuada",
+              "Inadecuada"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 7,
+            "descripcion": "Rutas de evacuación visibles y accesibles",
+            "tipo_campo": "select",
+            "valores": [
+              "Sí",
+              "No"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 8,
+            "descripcion": "Validación del supervisor HSE",
+            "tipo_campo": "firma",
+            "obligatorio": true
+          }
+        ]
+      },
+      {
+        "nombre": "Mantenimiento preventivo de bomba electrosumergible (ESP)",
+        "objetivo": "Verificar condiciones del sistema ESP y su tablero de control para asegurar operación eficiente.",
+        "pasos": [
+          {
+            "id": 1,
+            "descripcion": "Medición de voltaje en tablero",
+            "tipo_campo": "numero",
+            "unidad": "V",
+            "obligatorio": true,
+            "validacion": {
+              "min": 0,
+              "max": 15000
+            }
+          },
+          {
+            "id": 2,
+            "descripcion": "Medición de corriente por fase",
+            "tipo_campo": "grupo",
+            "obligatorio": true,
+            "campos": [
+              {
+                "nombre": "Fase A",
+                "tipo_campo": "numero",
+                "unidad": "A",
+                "obligatorio": true,
+                "validacion": {
+                  "min": 0,
+                  "max": 5000
+                }
+              },
+              {
+                "nombre": "Fase B",
+                "tipo_campo": "numero",
+                "unidad": "A",
+                "obligatorio": true,
+                "validacion": {
+                  "min": 0,
+                  "max": 5000
+                }
+              },
+              {
+                "nombre": "Fase C",
+                "tipo_campo": "numero",
+                "unidad": "A",
+                "obligatorio": true,
+                "validacion": {
+                  "min": 0,
+                  "max": 5000
+                }
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "descripcion": "Inspección visual de cables de potencia (aislamiento, conectores)",
+            "tipo_campo": "select",
+            "valores": [
+              "Sin daños",
+              "Con daños"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 4,
+            "descripcion": "Adjuntar foto de cables (si hay daños)",
+            "tipo_campo": "foto",
+            "obligatorio": false,
+            "condicional": {
+              "cuando": {
+                "paso_id": 3,
+                "igual_a": "Con daños"
+              }
+            }
+          },
+          {
+            "id": 5,
+            "descripcion": "Estado del fluido dieléctrico",
+            "tipo_campo": "select",
+            "valores": [
+              "Adecuado",
+              "Reemplazo requerido"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 6,
+            "descripcion": "Curva de eficiencia del último mes adjunta",
+            "tipo_campo": "archivo",
+            "valores": [
+              "PDF",
+              "Excel",
+              "Imagen"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 7,
+            "descripcion": "Anomalías detectadas",
+            "tipo_campo": "texto",
+            "obligatorio": false,
+            "validacion": {
+              "max_len": 1500
+            }
+          },
+          {
+            "id": 8,
+            "descripcion": "Firma del técnico de mantenimiento",
+            "tipo_campo": "firma",
+            "obligatorio": true
+          }
+        ]
+      },
+      {
+        "nombre": "Abandono temporal de pozo",
+        "objetivo": "Asegurar condiciones seguras y documentadas durante el cierre temporal del pozo.",
+        "pasos": [
+          {
+            "id": 1,
+            "descripcion": "Válvulas maestras cerradas y bloqueadas (LOTO)",
+            "tipo_campo": "select",
+            "valores": [
+              "Bloqueadas",
+              "No bloqueadas"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 2,
+            "descripcion": "Purgado de presión en líneas",
+            "tipo_campo": "select",
+            "valores": [
+              "Purgado",
+              "No purgado"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 3,
+            "descripcion": "Documentación de aislamiento y permisos adjunta",
+            "tipo_campo": "archivo",
+            "valores": [
+              "PDF",
+              "Imagen"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 4,
+            "descripcion": "Señalización visible de pozo en estado 'Abandonado'",
+            "tipo_campo": "select",
+            "valores": [
+              "Sí",
+              "No"
+            ],
+            "obligatorio": true
+          },
+          {
+            "id": 5,
+            "descripcion": "Registro fotográfico de instalaciones selladas",
+            "tipo_campo": "foto",
+            "obligatorio": true
+          },
+          {
+            "id": 6,
+            "descripcion": "Aprobación de supervisor de operaciones",
+            "tipo_campo": "firma",
+            "obligatorio": true
+          }
+        ]
+      }
+    ]
+  }
