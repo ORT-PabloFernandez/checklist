@@ -173,3 +173,29 @@ export function generateId() {
     crypto.randomUUID() : 
     `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
+
+
+export function decodeJWT(token) {
+  if (!token) return null;
+  
+  try {
+    // JWT format: header.payload.signature
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      console.warn('Invalid JWT format');
+      return null;
+    }
+    
+    // Decode the payload (second part)
+    const payload = parts[1];
+    
+    // Base64 URL decode
+    const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+    
+    // Parse JSON
+    return JSON.parse(decoded);
+  } catch (error) {
+    console.error('Error decoding JWT:', error);
+    return null;
+  }
+}
