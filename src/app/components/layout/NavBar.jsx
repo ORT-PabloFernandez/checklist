@@ -3,14 +3,13 @@
 import { useState } from 'react';
 //import { useAuth } from '../../../auth/AuthProvider';
 import styles from './navbar.css';
-
+import { useCurrentUser } from '@/lib/state';
 
 // Importar los componentes modulares
 import Logo from './Logo';
 import Menu from './Menu';
 import Notifications from './Notifications';
 import CurrentUser from '../ui/CurrentUser';
-import { useCurrentUser } from '@/lib/state';
 
 export default function Navbar() {
   const { logoutUser, currentUser, updateCurrentUser } = useCurrentUser();
@@ -23,22 +22,19 @@ export default function Navbar() {
   if (!currentUser) return null;
 
   return (
-    <nav className={styles.navbar}>
-      <div className={styles.logoMenu}>
-        <Logo />
-        <Menu />
-      </div>
-      <div className={styles.userActions}>
-        <Notifications />
-        <CurrentUser />
+    <nav className="navbar">
+      <div className="navbar-content">
+        {/* Logo and Menu */}
+        <div className="navbar-left">
+          <Logo />
+          <Menu />
+        </div>
 
-        <button
-          onClick={logout}
-          className="ml-4 p-2 bg-red-500 text-white rounded hover:bg-red-600"
-        >
-          Cerrar Sesión
-        </button>
-
+        {/* User Menu */}
+        <div className="navbar-right">
+          <Notifications notificationIndicator={notificationIndicator} />
+          <CurrentUser currentUser={currentUser} logout={logout} />
+        </div>
       </div>
     </nav>
   );

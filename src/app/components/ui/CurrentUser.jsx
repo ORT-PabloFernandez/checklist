@@ -20,9 +20,9 @@ const CurrentUser = ({ currentUser, logout }) => {
         <span className="sr-only">Abrir menú de usuario</span>
         <div className="user-button-content">
           <div className="user-avatar">
-            <img 
+            <img
               src={currentUser.avatar}
-              alt={`Foto de ${currentUser.name}`} 
+              alt={`Foto de ${currentUser.name}`}
             />
           </div>
           <span className="user-name">{currentUser.name}</span>
@@ -44,7 +44,7 @@ const CurrentUser = ({ currentUser, logout }) => {
           <div className="dropdown-item">
             {currentUser.email}
           </div>
-          <div 
+          <div
             onClick={logout}
             className="dropdown-item logout-item"
             role="menuitem"
