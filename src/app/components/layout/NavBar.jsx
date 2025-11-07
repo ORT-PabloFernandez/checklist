@@ -3,7 +3,7 @@
 import { useState } from 'react';
 //import { useAuth } from '../../../auth/AuthProvider';
 import styles from './navbar.css';
-import { useCurrentUser } from '@/lib/state';
+import { useCurrentUser } from '../../../lib/state';
 
 // Importar los componentes modulares
 import Logo from './Logo';
@@ -12,9 +12,16 @@ import Notifications from './Notifications';
 import CurrentUser from '../ui/CurrentUser';
 
 export default function Navbar() {
-  const { logoutUser, currentUser, updateCurrentUser } = useCurrentUser();
+  const { currentUser, updateCurrentUser } = useCurrentUser();
   const logout = () => {
-    logoutUser();
+    updateCurrentUser(null);
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userSession');
+    sessionStorage.removeItem('currentUser');
+    sessionStorage.removeItem('authToken');
+
+
   };
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notificationIndicator, setNotificationIndicator] = useState(true);

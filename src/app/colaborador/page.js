@@ -13,8 +13,8 @@ export default function ColaboradorDashboard() {
   const { currentUser } = useCurrentUser();
 
 
-  //VIEJO CÓDIGO
-  // Redirect if not a colaborador (using useEffect to avoid state updates during render)
+  // // VIEJO CÓDIGO
+  // // Redirect if not a colaborador (using useEffect to avoid state updates during render)
   // useEffect(() => {
   //   if (currentUser && currentUser.role !== 'Colaborador') {
   //     router.push(`/${currentUser.role.toLowerCase()}`);

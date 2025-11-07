@@ -7,6 +7,27 @@ import './currentUser.css';
 const CurrentUser = ({ currentUser, logout }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+
+  const handleLogout = () => {
+    logout();
+    setDropdownOpen(false);
+  }
+
+  const handleClickOutside = (e) => {
+    if (!e.target.closest('.current-user-container')) {
+      setDropdownOpen(false);
+    }
+  };
+  React.useEffect(() => {
+    if (dropdownOpen) {
+      document.addEventListener('click', handleClickOutside);
+      return () => {
+        document.removeEventListener('click', handleClickOutside);
+      };
+    }
+  }, [dropdownOpen]);
+
+
   return (
     <div className="current-user-container">
       <button
@@ -45,7 +66,7 @@ const CurrentUser = ({ currentUser, logout }) => {
             {currentUser.email}
           </div>
           <div
-            onClick={logout}
+            onClick={handleLogout}
             className="dropdown-item logout-item"
             role="menuitem"
           >
