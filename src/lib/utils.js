@@ -1,5 +1,7 @@
 'use client';
 
+import { jwtDecode } from 'jwt-decode';
+
 /**
  * General utility functions for the application
  */
@@ -172,4 +174,21 @@ export function generateId() {
   return crypto.randomUUID ? 
     crypto.randomUUID() : 
     `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
+
+/**
+ * Decode a JWT token using jwt-decode library
+ * @param {string} token - JWT token to decode
+ * @returns {Object|null} Decoded token payload or null if invalid
+ */
+export function decodeJWT(token) {
+  if (!token) return null;
+  
+  try {
+    return jwtDecode(token);
+  } catch (error) {
+    console.error('Error decoding JWT:', error);
+    return null;
+  }
 }

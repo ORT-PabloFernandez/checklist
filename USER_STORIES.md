@@ -25,7 +25,7 @@ Este documento contiene las User Stories (US) para el desarrollo del sistema de 
 - Si el login falla, se muestra un mensaje de error claro
 - El token de autenticación se guarda en localStorage
 
-**Estado:** ⚠️ Parcialmente implementado (login existe pero necesita mejor integración con roles)
+**Estado:** ✅ Implementado (Falta probarlo cuando el backend esté listo)
 
 **Prioridad:** Alta
 

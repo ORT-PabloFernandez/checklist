@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { decodeJWT } from '@/lib/utils';
+import { setCurrentUser } from '@/lib/storage';
+import { getEndpointUrl, TOKEN_KEY } from '@/lib/config';
 import '../auth.css';
 
 export default function LoginPage() {
@@ -29,7 +32,7 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://tp2-backend-htarb0a8gqazcmfh.eastus2-01.azurewebsites.net/api/users/login', {
+      const response = await fetch(getEndpointUrl('LOGIN'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,12 +48,33 @@ export default function LoginPage() {
       }
 
       const data = await response.json();
-      // Guardar el token en localStorage o manejar la sesión
-      console.log(data.token);
+      
       if (data.token) {
-        localStorage.setItem('token', data.token);
-        // Redirigir al dashboard o página principal
-        router.push('/');
+        localStorage.setItem(TOKEN_KEY, data.token);
+        const userInfo = decodeJWT(data.token);
+
+        if(!userInfo) {
+          setError('Error al decodificar el token');
+          return;
+        }
+                
+        const user = {
+          email: userInfo.email,
+          role: userInfo.role,
+          name: userInfo.username,
+        };
+
+        if (!user) {
+          setError('Error al obtener el usuario');
+          return;
+        }
+        
+        setCurrentUser(user);
+        
+        const rolePath = user.role.toLowerCase();
+        rolePath === 'supervisor'
+          ? router.push('/supervisor')
+          : router.push('/colaborador');
       }
 
     } catch (err) {
