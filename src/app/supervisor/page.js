@@ -6,10 +6,13 @@ import Link from 'next/link';
 import RoleSwitcher from '../../components/RoleSwitcher';
 import AssignmentList from '../../components/AssignmentList';
 import AssignmentForm from '../../components/AssignmentForm';
+import TaskBuilderForm from '../../components/TaskBuilderForm';
+import TaskList from '../../components/TaskList';
 import { useCurrentUser } from '../../lib/state';
 
 export default function SupervisorDashboard() {
   const [showForm, setShowForm] = useState(false);
+  const [showTaskForm, setShowTaskForm] = useState(false);
   const router = useRouter();
   const { currentUser } = useCurrentUser();
   
@@ -28,6 +31,10 @@ export default function SupervisorDashboard() {
   
   const handleFormSuccess = () => {
     setShowForm(false);
+  };
+
+  const handleTaskFormSuccess = () => {
+    setShowTaskForm(false);
   };
 
   // Mostrar pantalla de carga si no tenemos usuario aún
@@ -74,6 +81,27 @@ export default function SupervisorDashboard() {
         role="Supervisor"
         onActionClick={handleActionClick}
       />
+
+      <div className="mt-10">
+        <div className="mb-6 flex justify-between items-center">
+          <h2 className="text-xl font-semibold">Tareas</h2>
+          
+          <button
+            onClick={() => setShowTaskForm(!showTaskForm)}
+            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded flex items-center"
+          >
+            {showTaskForm ? 'Ocultar formulario' : 'Nueva Tarea'}
+          </button>
+        </div>
+
+        {showTaskForm && (
+          <div className="mb-8">
+            <TaskBuilderForm onSuccess={handleTaskFormSuccess} />
+          </div>
+        )}
+
+        <TaskList />
+      </div>
     </div>
   );
 }

@@ -8,7 +8,8 @@
 const KEYS = {
   ASSIGNMENTS: 'checklist:assignments',
   EXECUTIONS: 'checklist:executions',
-  CURRENT_USER: 'checklist:user'
+  CURRENT_USER: 'checklist:user',
+  CUSTOM_TASKS: 'checklist:custom-tasks'
 };
 
 /**
@@ -235,6 +236,7 @@ export function clearAllData() {
   try {
     localStorage.removeItem(KEYS.ASSIGNMENTS);
     localStorage.removeItem(KEYS.EXECUTIONS);
+    localStorage.removeItem(KEYS.CUSTOM_TASKS);
     return true;
   } catch (error) {
     console.error('Error clearing data:', error);
@@ -296,6 +298,77 @@ export function initializeDefaultAssignments(userEmail) {
     return true;
   } catch (error) {
     console.error('Error initializing default assignments:', error);
+    return false;
+  }
+}
+
+/**
+ * Get all custom tasks from localStorage
+ * @returns {Array} List of custom tasks
+ */
+export function listCustomTasks() {
+  try {
+    const stored = localStorage.getItem(KEYS.CUSTOM_TASKS);
+    return stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    console.error('Error loading custom tasks:', error);
+    return [];
+  }
+}
+
+/**
+ * Save a new custom task
+ * @param {Object} task - Task definition to store
+ * @returns {string} The ID of the saved task
+ */
+export function saveCustomTask(task) {
+  try {
+    const tasks = listCustomTasks();
+
+    const newTask = { ...task };
+
+    if (!newTask.id) {
+      newTask.id = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString();
+    }
+
+    // Normalize pasos ids to ensure sequential numbering
+    if (Array.isArray(newTask.pasos)) {
+      newTask.pasos = newTask.pasos.map((paso, index) => ({
+        ...paso,
+        id: index + 1
+      }));
+    } else {
+      newTask.pasos = [];
+    }
+
+    tasks.push(newTask);
+    localStorage.setItem(KEYS.CUSTOM_TASKS, JSON.stringify(tasks));
+
+    return newTask.id;
+  } catch (error) {
+    console.error('Error saving custom task:', error);
+    throw error;
+  }
+}
+
+/**
+ * Delete a custom task by ID
+ * @param {string} id - Task ID
+ * @returns {boolean} Whether the operation was successful
+ */
+export function deleteCustomTask(id) {
+  try {
+    const tasks = listCustomTasks();
+    const filtered = tasks.filter(task => task.id !== id);
+
+    if (filtered.length === tasks.length) {
+      return false;
+    }
+
+    localStorage.setItem(KEYS.CUSTOM_TASKS, JSON.stringify(filtered));
+    return true;
+  } catch (error) {
+    console.error(`Error deleting custom task ${id}:`, error);
     return false;
   }
 }

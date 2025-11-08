@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAssignments, useCurrentUser } from '../lib/state';
+import { useAssignments, useCurrentUser, useCustomTasks } from '../lib/state';
 import { loadPackage } from '../lib/loader';
 import { slugify } from '../lib/utils';
 
 export default function AssignmentForm({ onSuccess }) {
   const { currentUser } = useCurrentUser();
   const { createAssignment } = useAssignments();
+  const { tasks: customTasks, loading: customTasksLoading } = useCustomTasks();
   const [checklists, setChecklists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,6 +16,8 @@ export default function AssignmentForm({ onSuccess }) {
   const [formData, setFormData] = useState({
     checklistSlug: '',
     checklistNombre: '',
+    customTaskId: '',
+    esChecklistPersonalizado: false,
     asignadoA: '',
     fechaVencimiento: '',
     prioridad: 'Media',
@@ -47,10 +50,17 @@ export default function AssignmentForm({ onSuccess }) {
       // Special handling for checklist selection
       if (name === 'checklistSlug' && value) {
         const selectedChecklist = checklists.find(c => slugify(c.nombre) === value);
+        const selectedCustomTask = (customTasks || []).find(task => {
+          const taskSlug = task.slug || slugify(task.nombre);
+          return taskSlug === value;
+        });
+
         return {
           ...prev,
           [name]: value,
-          checklistNombre: selectedChecklist ? selectedChecklist.nombre : ''
+          checklistNombre: selectedCustomTask ? selectedCustomTask.nombre : (selectedChecklist ? selectedChecklist.nombre : ''),
+          customTaskId: selectedCustomTask ? selectedCustomTask.id : '',
+          esChecklistPersonalizado: Boolean(selectedCustomTask)
         };
       }
       
@@ -85,6 +95,8 @@ export default function AssignmentForm({ onSuccess }) {
       setFormData({
         checklistSlug: '',
         checklistNombre: '',
+        customTaskId: '',
+        esChecklistPersonalizado: false,
         asignadoA: '',
         fechaVencimiento: '',
         prioridad: 'Media',
@@ -122,14 +134,30 @@ export default function AssignmentForm({ onSuccess }) {
           onChange={handleChange}
           className="w-full border rounded p-2"
           required
-          disabled={loading}
+          disabled={loading || customTasksLoading}
         >
           <option value="">Seleccione un checklist</option>
-          {checklists.map((checklist, index) => (
-            <option key={index} value={slugify(checklist.nombre)}>
-              {checklist.nombre}
-            </option>
-          ))}
+          {checklists.length > 0 && (
+            <optgroup label="Checklists del paquete">
+              {checklists.map((checklist, index) => (
+                <option key={`packaged-${index}`} value={slugify(checklist.nombre)}>
+                  {checklist.nombre}
+                </option>
+              ))}
+            </optgroup>
+          )}
+          {(customTasks || []).length > 0 && (
+            <optgroup label="Tareas personalizadas">
+              {(customTasks || []).map(task => {
+                const taskSlug = task.slug || slugify(task.nombre);
+                return (
+                  <option key={`custom-${task.id}`} value={taskSlug}>
+                    {task.nombre} (Personalizada)
+                  </option>
+                );
+              })}
+            </optgroup>
+          )}
         </select>
       </div>
       
@@ -197,7 +225,7 @@ export default function AssignmentForm({ onSuccess }) {
         <button
           type="submit"
           className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
-          disabled={loading}
+          disabled={loading || customTasksLoading}
         >
           Crear Asignación
         </button>

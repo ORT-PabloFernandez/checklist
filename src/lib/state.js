@@ -5,7 +5,10 @@ import { getCurrentUser, setCurrentUser, listAssignments, saveAssignment, update
   getAssignment,
   saveExecution,
   getExecution,
-  initializeDefaultAssignments } from './storage';
+  initializeDefaultAssignments,
+  listCustomTasks,
+  saveCustomTask,
+  deleteCustomTask } from './storage';
 import { isPasoVisible, getVisibilityMap } from './conditions';
 import { validateField } from './validation';
 
@@ -137,6 +140,66 @@ export function useAssignments() {
   };
 }
 
+/**
+ * Hook for managing custom tasks definitions
+ * @returns {Object} Custom tasks state and operations
+ */
+export function useCustomTasks() {
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const loadTasks = useCallback(() => {
+    setLoading(true);
+    try {
+      const data = listCustomTasks();
+      setTasks(data);
+      setError(null);
+    } catch (err) {
+      console.error('Error loading custom tasks:', err);
+      setError('No se pudieron cargar las tareas personalizadas');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadTasks();
+  }, [loadTasks]);
+
+  const createTask = useCallback((task) => {
+    try {
+      const id = saveCustomTask(task);
+      loadTasks();
+      return id;
+    } catch (err) {
+      console.error('Error creating custom task:', err);
+      throw err;
+    }
+  }, [loadTasks]);
+
+  const removeTask = useCallback((id) => {
+    try {
+      const success = deleteCustomTask(id);
+      if (success) {
+        loadTasks();
+      }
+      return success;
+    } catch (err) {
+      console.error('Error deleting custom task:', err);
+      return false;
+    }
+  }, [loadTasks]);
+
+  return {
+    tasks,
+    loading,
+    error,
+    loadTasks,
+    createTask,
+    deleteTask: removeTask
+  };
+}
 /**
  * Hook for managing execution of a checklist
  * @param {string} assignmentId - The ID of the assignment being executed
