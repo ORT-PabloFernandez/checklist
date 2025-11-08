@@ -13,6 +13,7 @@ import { useCurrentUser } from '../../lib/state';
 export default function SupervisorDashboard() {
   const [showForm, setShowForm] = useState(false);
   const [showTaskForm, setShowTaskForm] = useState(false);
+  const [taskListRefreshKey, setTaskListRefreshKey] = useState(0);
   const router = useRouter();
   const { currentUser } = useCurrentUser();
   
@@ -35,6 +36,7 @@ export default function SupervisorDashboard() {
 
   const handleTaskFormSuccess = () => {
     setShowTaskForm(false);
+    setTaskListRefreshKey(prev => prev + 1);
   };
 
   // Mostrar pantalla de carga si no tenemos usuario aún
@@ -100,7 +102,7 @@ export default function SupervisorDashboard() {
           </div>
         )}
 
-        <TaskList />
+        <TaskList key={taskListRefreshKey} />
       </div>
     </div>
   );
