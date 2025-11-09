@@ -5,7 +5,8 @@ import { getCurrentUser, setCurrentUser, listAssignments, saveAssignment, update
   getAssignment,
   saveExecution,
   getExecution,
-  initializeDefaultAssignments } from './storage';
+  initializeDefaultAssignments, 
+  listHistory} from './storage';
 import { isPasoVisible, getVisibilityMap } from './conditions';
 import { validateField } from './validation';
 
@@ -307,3 +308,33 @@ export function useExecutionState(assignmentId, checklist) {
     assignmentData
   };
 }
+
+
+/**
+ * Hook for managing assignment list and operations
+ * @returns {Object} Assignments and related functions
+ */
+export function useHistory() {
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Load assignments on mount
+  useEffect(() => {
+    loadHistory();
+  }, []);
+  
+  // Load assignments from storage
+  const loadHistory = useCallback(() => {
+    setLoading(true);
+    const data = listHistory();
+    setHistory(data);
+    setLoading(false);
+  }, []);
+  
+  return {
+    history,
+    loading,
+    loadHistory
+  };
+}
+

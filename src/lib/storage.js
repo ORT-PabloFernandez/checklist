@@ -1,11 +1,13 @@
 'use client';
 
+//import historyDummy from './historyDummy.json';
 /**
  * Utilities for localStorage operations to persist data
  */
 
 // Storage keys
 const KEYS = {
+  HISTORY: 'checklist.history',
   ASSIGNMENTS: 'checklist:assignments',
   EXECUTIONS: 'checklist:executions',
   CURRENT_USER: 'checklist:user'
@@ -297,5 +299,20 @@ export function initializeDefaultAssignments(userEmail) {
   } catch (error) {
     console.error('Error initializing default assignments:', error);
     return false;
+  }
+}
+
+
+/**
+ * Get all assignments from localStorage
+ * @returns {Array} List of assignments
+ */
+export function listHistory() {
+  try {
+    const stored = localStorage.getItem(KEYS.HISTORY);
+    return stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    console.error('Error loading assignments:', error);
+    return [];
   }
 }
