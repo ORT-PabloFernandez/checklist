@@ -69,9 +69,11 @@ export default function AssignmentList({
     const status = assignment.estado.toLowerCase();
     
     if (role === 'Supervisor') {
+      let reviewButton = null;
+      let deleteButton = null;
       // Supervisor can review if assignment is sent for review
       if (status === 'enviada' || status === 'en revisión' || status === 'en revision') {
-        return (
+        reviewButton = (
           <button 
             onClick={() => onActionClick('review', assignment)}
             className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
@@ -80,13 +82,19 @@ export default function AssignmentList({
           </button>
         );
       }
-      return (
+      deleteButton = (
          <button 
             onClick={() => handleActionDelete(assignment)}
             className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700"
           >
             Eliminar
           </button>
+      );
+      return (
+        <div>
+          {reviewButton}
+          {deleteButton}
+        </div>
       );
     } else if (role === 'Colaborador') {
       // Colaborador can execute assignments
