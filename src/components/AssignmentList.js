@@ -55,6 +55,14 @@ export default function AssignmentList({
     return createB - createA;
   });
   
+  const handleActionDelete = (assignment) => {
+    const confirmDelete = window.confirm("¿Estás seguro de que quieres eliminar este elemento?");
+    if(confirmDelete){
+      console.log('ELIMINANDO');
+      //const nuevaAssigment = sortedAssignments.filter((assignment2) => {return assignment2 === assignment})
+      //localStorage.setItem(KEYS.ASSIGNMENTS, JSON.stringify(nuevaAssigment));
+    }
+  }
   const getActionButton = (assignment) => {
     if (!onActionClick) return null;
     
@@ -72,6 +80,14 @@ export default function AssignmentList({
           </button>
         );
       }
+      return (
+         <button 
+            onClick={() => handleActionDelete(assignment)}
+            className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700"
+          >
+            Eliminar
+          </button>
+      );
     } else if (role === 'Colaborador') {
       // Colaborador can execute assignments
       const execButtonText = status === 'asignada' ? 'Iniciar' : 'Continuar';
