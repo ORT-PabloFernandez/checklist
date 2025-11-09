@@ -6,6 +6,7 @@ import Link from 'next/link';
 import RoleSwitcher from '../../components/RoleSwitcher';
 import AssignmentList from '../../components/AssignmentList';
 import { useCurrentUser } from '../../lib/state';
+import HistoryList from '@/components/HistoryList';
 
 export default function ColaboradorDashboard() {
   const router = useRouter();
@@ -47,6 +48,12 @@ export default function ColaboradorDashboard() {
         <p className="text-gray-500">Usuario actual: <strong>{currentUser.name}</strong> ({currentUser.email})</p>
       </div>
       
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold">Mis History</h2>
+      </div>
+
+      <HistoryList />
+
       <div className="mb-6">
         <h2 className="text-xl font-semibold">Mis Asignaciones</h2>
       </div>
