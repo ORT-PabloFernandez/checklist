@@ -31,20 +31,21 @@ export function useCurrentUser() {
       if (user) {
         // Usuario existente, establecer en estado
         setUser(user);
-      } else {
-        // Crear usuario predeterminado si no existe
-        const defaultCollaborator = defaultUsers.find(u => u.role === 'Colaborador');
-        if (defaultCollaborator) {
-          setCurrentUser(defaultCollaborator);
-          setUser(defaultCollaborator);
+      } //else {
+      //     // Crear usuario predeterminado si no existe
+      //     const defaultCollaborator = defaultUsers.find(u => u.role === 'Colaborador');
+      //     if (defaultCollaborator) {
+      //       setCurrentUser(defaultCollaborator);
+      //       setUser(defaultCollaborator);
 
-          // Esperar un momento para asegurar que el usuario esté guardado
-          await new Promise(resolve => setTimeout(resolve, 100));
+      //       // Esperar un momento para asegurar que el usuario esté guardado
+      //       await new Promise(resolve => setTimeout(resolve, 100));
 
-          // Inicializar asignaciones predeterminadas para este usuario
-          initializeDefaultAssignments(defaultCollaborator.email);
-        }
-      }
+      //       // Inicializar asignaciones predeterminadas para este usuario
+      //       initializeDefaultAssignments(defaultCollaborator.email);
+      //     }
+      //   }
+      // };
     };
 
     initializeUser();

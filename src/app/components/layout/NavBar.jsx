@@ -7,6 +7,7 @@ import { useCurrentUser } from '../../../lib/state';
 
 // Importar los componentes modulares
 import Logo from './Logo';
+import Link from 'next/link';
 import Menu from './Menu';
 import Notifications from './Notifications';
 import CurrentUser from '../ui/CurrentUser';
@@ -21,7 +22,7 @@ export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notificationIndicator, setNotificationIndicator] = useState(true);
 
-  if (!currentUser) return null;
+  // if (!currentUser) return null;
 
   return (
     <nav className="navbar">
@@ -29,13 +30,26 @@ export default function Navbar() {
         {/* Logo and Menu */}
         <div className="navbar-left">
           <Logo />
-          <Menu />
+          {currentUser && <Menu />}
         </div>
 
         {/* User Menu */}
         <div className="navbar-right">
-          <Notifications notificationIndicator={notificationIndicator} />
-          <CurrentUser currentUser={currentUser} logout={logout} />
+          {currentUser ? (
+            <>
+              <Notifications notificationIndicator={notificationIndicator} />
+              <CurrentUser currentUser={currentUser} logout={logout} />
+            </>
+          ) : (
+            <div className="auth-buttons">
+              <Link href="/auth/login" className="login-button">
+                Iniciar Sesión
+              </Link>
+              <Link href="/auth/register" className="register-button">
+                Registrarse
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </nav>
