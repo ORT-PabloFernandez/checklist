@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import RoleSwitcher from '../../../components/RoleSwitcher';
 import { getExecution, getAssignment } from '../../../lib/storage';
 import { useCurrentUser } from '../../../lib/state';
 import { formatDate } from '../../../lib/utils';
@@ -63,9 +62,7 @@ export default function SummaryPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <RoleSwitcher />
-      
+    <div className="container mx-auto px-4 py-8">      
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-4">
           {currentUser?.role === 'Supervisor' ? (
