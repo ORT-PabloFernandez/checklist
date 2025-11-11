@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import RoleSwitcher from '../../../../components/RoleSwitcher';
 import ReviewPanel from '../../../../components/ReviewPanel';
 import { getAssignment, getExecution } from '../../../../lib/storage';
 import { useCurrentUser } from '../../../../lib/state';
@@ -66,7 +67,9 @@ export default function ReviewPage() {
   }, [assignmentId]);
 
   return (
-    <div className="container mx-auto px-4 py-8">      
+    <div className="container mx-auto px-4 py-8">
+      <RoleSwitcher />
+      
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-4">
           <Link href="/supervisor" className="text-blue-600 hover:underline">

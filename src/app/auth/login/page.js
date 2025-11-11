@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { decodeJWT, translateRole } from '@/lib/utils';
+import { decodeJWT } from '@/lib/utils';
 import { setCurrentUser } from '@/lib/storage';
 import { getEndpointUrl, TOKEN_KEY } from '@/lib/config';
 import '../auth.css';
@@ -44,8 +44,7 @@ export default function LoginPage() {
       });
 
       if (!response.ok) {
-        const dataError = await response.json();
-        throw new Error(`Error: ${response.status} - ${dataError.message}`);
+        throw new Error('Error al iniciar sesión');
       }
 
       const data = await response.json();
@@ -61,7 +60,7 @@ export default function LoginPage() {
                 
         const user = {
           email: userInfo.email,
-          role: translateRole(userInfo.role),
+          role: userInfo.role,
           name: userInfo.username,
         };
 

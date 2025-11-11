@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Link from 'next/link';
+import RoleSwitcher from '../../components/RoleSwitcher';
 import AssignmentList from '../../components/AssignmentList';
 import { useCurrentUser } from '../../lib/state';
 import AuthGuard from '../../components/AuthGuard';

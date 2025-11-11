@@ -61,6 +61,7 @@ export function useCurrentUser() {
   return {
     currentUser,
     updateCurrentUser,
+    defaultUsers
   };
 }
 

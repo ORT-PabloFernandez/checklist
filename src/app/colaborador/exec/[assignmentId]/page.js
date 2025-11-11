@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import RoleSwitcher from '../../../../components/RoleSwitcher';
 import ChecklistRunner from '../../../../components/ChecklistRunner';
 import { getAssignment } from '../../../../lib/storage';
 import { useCurrentUser } from '../../../../lib/state';
@@ -79,7 +80,9 @@ export default function ExecutePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">      
+    <div className="container mx-auto px-4 py-8">
+      <RoleSwitcher />
+      
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-4">
           <Link href="/colaborador" className="text-blue-600 hover:underline">

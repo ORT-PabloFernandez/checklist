@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import '../auth.css'; 
-import { getEndpointUrl } from '@/lib/config';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -30,24 +29,26 @@ export default function SignUpPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(getEndpointUrl('REGISTER'), {
+      const response = await fetch('https://tp2-backend-htarb0a8gqazcmfh.eastus2-01.azurewebsites.net/api/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: formData.user,
+          user: formData.user,
           email: formData.email,
           password: formData.password
         }),
       });
 
       if (!response.ok) {
-        const dataError = await response.json();
-        throw new Error(`Error: ${response.status} - ${dataError.message}`);
+        const data = await response.json();
+        throw new Error(data.message || 'Error en el registro');
       }
-
-      router.push('/auth/login');
+      
+      const data = await response.json();
+      // Redirigir al login después de registro exitoso
+      router.push('/login');
       
     } catch (err) {
       setError(err.message || 'Error al conectar con el servidor');

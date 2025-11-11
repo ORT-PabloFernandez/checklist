@@ -192,19 +192,3 @@ export function decodeJWT(token) {
     return null;
   }
 }
-
-  /**
- * Translate user role from English (backend) to Spanish (display)
- * @param {string} role - Role name in English (collaborator, supervisor)
- * @returns {string} Role name in Spanish with first letter capitalized
- */
-  export function translateRole(role) {
-    if (!role) throw new Error('Rol del usuario no válido.');
-    
-    const roleMap = {
-      'collaborator': 'Colaborador',
-      'supervisor': 'Supervisor'
-    };
-    
-    return roleMap[role];
-  }
