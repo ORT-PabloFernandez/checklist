@@ -18,6 +18,12 @@ import { validateField } from './validation';
 export function useCurrentUser() {
   const [currentUser, setUser] = useState(null);
 
+  // Default users for the system
+  const defaultUsers = [
+    { email: 'supervisor@ort.edu.ar', role: 'Supervisor', name: 'Supervisor' },
+    { email: 'Nestor.Wilke@ejemplo.com', role: 'Colaborador', name: 'Nestor Wilke', avatar: 'https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Nestor%20Wilke.jpg' }
+  ];
+
   // Load user on mount
   useEffect(() => {
     const initializeUser = async () => {
@@ -25,7 +31,21 @@ export function useCurrentUser() {
       if (user) {
         // Usuario existente, establecer en estado
         setUser(user);
-      }
+      } //else {
+      //     // Crear usuario predeterminado si no existe
+      //     const defaultCollaborator = defaultUsers.find(u => u.role === 'Colaborador');
+      //     if (defaultCollaborator) {
+      //       setCurrentUser(defaultCollaborator);
+      //       setUser(defaultCollaborator);
+
+      //       // Esperar un momento para asegurar que el usuario esté guardado
+      //       await new Promise(resolve => setTimeout(resolve, 100));
+
+      //       // Inicializar asignaciones predeterminadas para este usuario
+      //       initializeDefaultAssignments(defaultCollaborator.email);
+      //     }
+      //   }
+      // };
     };
 
     initializeUser();

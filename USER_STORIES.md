@@ -42,7 +42,7 @@ Este documento contiene las User Stories (US) para el desarrollo del sistema de 
 - Si un usuario no autenticado intenta acceder a rutas protegidas, es redirigido a `/auth/login`
 - Los redirects funcionan correctamente en todas las páginas protegidas
 
-**Estado:** ⚠️ Parcialmente implementado (algunos redirects existen pero necesitan mejorarse)
+**Estado:** ⚠️ Implementado pendiente de prueba
 
 **Prioridad:** Alta
 
@@ -59,7 +59,7 @@ Este documento contiene las User Stories (US) para el desarrollo del sistema de 
 - El usuario es redirigido a la página de login
 - La sesión no se puede recuperar después de cerrar
 
-**Estado:** ❌ No implementado
+**Estado:** ⚠️ implementado pendiente de prueba
 
 **Prioridad:** Media
 

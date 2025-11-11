@@ -7,6 +7,27 @@ import './currentUser.css';
 const CurrentUser = ({ currentUser, logout }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+
+  const handleLogout = () => {
+    logout();
+    setDropdownOpen(false);
+  }
+
+  const handleClickOutside = (e) => {
+    if (!e.target.closest('.current-user-container')) {
+      setDropdownOpen(false);
+    }
+  };
+  React.useEffect(() => {
+    if (dropdownOpen) {
+      document.addEventListener('click', handleClickOutside);
+      return () => {
+        document.removeEventListener('click', handleClickOutside);
+      };
+    }
+  }, [dropdownOpen]);
+
+
   return (
     <div className="current-user-container">
       <button
@@ -20,9 +41,9 @@ const CurrentUser = ({ currentUser, logout }) => {
         <span className="sr-only">Abrir menú de usuario</span>
         <div className="user-button-content">
           <div className="user-avatar">
-            <img 
+            <img
               src={currentUser.avatar}
-              alt={`Foto de ${currentUser.name}`} 
+              alt={`Foto de ${currentUser.name}`}
             />
           </div>
           <span className="user-name">{currentUser.name}</span>
@@ -44,8 +65,8 @@ const CurrentUser = ({ currentUser, logout }) => {
           <div className="dropdown-item">
             {currentUser.email}
           </div>
-          <div 
-            onClick={logout}
+          <div
+            onClick={handleLogout}
             className="dropdown-item logout-item"
             role="menuitem"
           >
