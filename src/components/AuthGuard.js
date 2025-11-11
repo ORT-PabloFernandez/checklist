@@ -2,15 +2,17 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCurrentUser } from '@/lib/state';
+import { getCurrentUser } from '@/lib/storage';
 
 export default function AuthGuard({ children, requiredRole, isPublic = false }) {
-    const { currentUser } = useCurrentUser();
+    const { currentUser, isLoading } = useCurrentUser();
     const router = useRouter();
 
     useEffect(() => {
+        if (isLoading) return; // Esperar a que termine de cargar el estado de autenticación
         if (currentUser === undefined) return;
         if (!currentUser && !isPublic) {
-            router.push('/login');
+            router.push('/auth/login');
             return;
         }
 
@@ -26,9 +28,9 @@ export default function AuthGuard({ children, requiredRole, isPublic = false }) 
             return;
         }
 
-    }, [currentUser, isPublic, requiredRole, router]);
+    }, [currentUser, isPublic, requiredRole, router, isLoading]);
 
-    if (currentUser === undefined) {
+    if (isLoading) {
         return <div className='container mx-auto px-4 py-8 text-center'>cargando...</div>;
     }
 

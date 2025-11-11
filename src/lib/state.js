@@ -17,6 +17,8 @@ import { validateField } from './validation';
  */
 export function useCurrentUser() {
   const [currentUser, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
 
   // Default users for the system
   const defaultUsers = [
@@ -27,25 +29,20 @@ export function useCurrentUser() {
   // Load user on mount
   useEffect(() => {
     const initializeUser = async () => {
-      let user = getCurrentUser();
-      if (user) {
-        // Usuario existente, establecer en estado
-        setUser(user);
-      } //else {
-      //     // Crear usuario predeterminado si no existe
-      //     const defaultCollaborator = defaultUsers.find(u => u.role === 'Colaborador');
-      //     if (defaultCollaborator) {
-      //       setCurrentUser(defaultCollaborator);
-      //       setUser(defaultCollaborator);
+      setIsLoading(true);
+      try {
+        let user = getCurrentUser();
+        console.log('🔄 Loading user from storage:', user);
 
-      //       // Esperar un momento para asegurar que el usuario esté guardado
-      //       await new Promise(resolve => setTimeout(resolve, 100));
-
-      //       // Inicializar asignaciones predeterminadas para este usuario
-      //       initializeDefaultAssignments(defaultCollaborator.email);
-      //     }
-      //   }
-      // };
+        if (user) {
+          setUser(user);
+        }
+        // Si no hay usuario, no hacemos nada - se mostrarán los botones de login
+      } catch (error) {
+        console.error('❌ Error loading user:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     initializeUser();
@@ -53,14 +50,29 @@ export function useCurrentUser() {
 
   // Update user in state and storage
   const updateCurrentUser = useCallback((user) => {
-    if (!user) return;
-    setCurrentUser(user);
-    setUser(user);
+    console.log('🔄 Updating user:', user);
+    if (user === null) {
+      // caso de logout - limpiar estado y almacenamiento
+      setUser(null);
+    } else if (user && user.email) {
+      // caso de login - guardar en estado y almacenamiento
+      setCurrentUser(user);
+      setUser(user);
+    }
+  }, []);
+
+
+  const logoutUser = useCallback(() => {
+    console.log('🚪 Executing logout from hook');
+    setUser(null);
+    // No llamamos a setCurrentUser(null) aquí porque clearAuth ya limpia el storage
   }, []);
 
   return {
     currentUser,
     updateCurrentUser,
+    logoutUser,
+    isLoading
   };
 }
 

@@ -38,7 +38,7 @@ export default function SupervisorDashboard() {
   return (
     <AuthGuard requiredRole="Supervisor">
       <div className="container mx-auto px-4 py-8">
-        <RoleSwitcher />
+
 
         <div className="mb-6">
           <h1 className="text-2xl font-bold mb-2">Panel de Supervisor</h1>

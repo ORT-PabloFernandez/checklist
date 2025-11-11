@@ -301,7 +301,16 @@ export function initializeDefaultAssignments(userEmail) {
 }
 
 export function clearAuth() {
-  localStorage.removeItem('currentUser');
-  localStorage.removeItem('authToken');
-  localStorage.removeItem('userSession');
+  try {
+    localStorage.removeItem(KEYS.CURRENT_USER);
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userSession');
+    localStorage.removeItem('token');
+    console.log('✅ Todos los datos de autenticación limpiados');
+    return true;
+  } catch (error) {
+    console.error('Error clearing authentication data:', error);
+    return false;
+  }
 }

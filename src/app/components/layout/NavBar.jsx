@@ -14,10 +14,17 @@ import CurrentUser from '../ui/CurrentUser';
 import { clearAuth } from '@/lib/storage';
 
 export default function Navbar() {
-  const { currentUser, updateCurrentUser } = useCurrentUser();
+  const { currentUser, updateCurrentUser, logoutUser } = useCurrentUser();
   const logout = () => {
+
     clearAuth();
     updateCurrentUser(null);
+    logoutUser();
+
+    setTimeout(() => {
+      console.log('recargando pagina');
+      window.location.reload();
+    }, 100);
   };
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notificationIndicator, setNotificationIndicator] = useState(true);
