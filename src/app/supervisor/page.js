@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import RoleSwitcher from '../../components/RoleSwitcher';
 import AssignmentList from '../../components/AssignmentList';
 import AssignmentForm from '../../components/AssignmentForm';
 import { useCurrentUser } from '../../lib/state';
