@@ -132,7 +132,7 @@ Este documento contiene las User Stories (US) para el desarrollo del sistema de 
 - Se puede filtrar por nombre (búsqueda)
 - Las tareas se cargan desde localStorage
 
-**Estado:** ❌ No implementado
+**Estado:** ✅ Implementado
 
 **Prioridad:** Media
 

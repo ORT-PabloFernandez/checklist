@@ -83,6 +83,11 @@ export function useAssignments() {
     setLoading(false);
   }, []);
   
+  // Refresh assignments (public method to refresh from outside)
+  const refreshAssignments = useCallback(() => {
+    loadAssignments();
+  }, [loadAssignments]);
+  
   // Create a new assignment
   const createAssignment = useCallback((assignment) => {
     try {
@@ -132,6 +137,7 @@ export function useAssignments() {
     assignments,
     loading,
     loadAssignments,
+    refreshAssignments,
     createAssignment,
     updateAssignment: updateAssignmentState
   };
