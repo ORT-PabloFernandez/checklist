@@ -93,7 +93,7 @@ export default function SummaryPage() {
         );
       }
 
-      // Firmas (mantenemos esta parte separada)
+      // Firmas (en caso de que sean data URLs)
       if (valor.startsWith('data:image/') && (
         pasoId.toLowerCase().includes('firma') ||
         pasoId.toLowerCase().includes('signature'))) {
@@ -116,7 +116,7 @@ export default function SummaryPage() {
         );
       }
 
-      // Texto largo
+      // Textos largos
       if (valor.length > 100) {
         return (
           <div className="field-long-text">
@@ -136,93 +136,199 @@ export default function SummaryPage() {
     }
     return <span className="whitespace-pre-wrap break-words">{String(valor)}</span>;
 
-  }
+  };
+
+  //funcion para agrupar respuestas por seccion
+  const groupResponses = (respuestas = []) => {
+    if (!respuestas) return { grouped: false, data: [] };
+
+    const visibleResponses = respuestas.filter(r => r.visible !== false);
+    return { grouped: false, data: visibleResponses }
+  };
+  const responseGroups = execution ? groupResponses(execution.respuestas) : { grouped: false, data: [] };
 }
 
 return (
-  <div className="container mx-auto px-4 py-8">
-    <div className="mb-6">
-      <div className="flex items-center gap-2 mb-4">
+  <div className="summary-container">
+    {/* Encabezado */}
+    <div className="summary-header">
+      <div className="summary-back-link">
         {currentUser?.role === 'Supervisor' ? (
-          <Link href="/supervisor" className="text-blue-600 hover:underline">
-            &larr; Volver al panel de supervisor
+          <Link href="/supervisor" className="summary-back-link">
+            <svg className="summary-back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Volver al panel de supervisor
           </Link>
         ) : (
-          <Link href="/colaborador" className="text-blue-600 hover:underline">
-            &larr; Volver al panel de colaborador
+          <Link href="/colaborador" className="summary-back-link">
+            <svg className="summary-back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Volver al panel de colaborador
           </Link>
         )}
       </div>
 
-      <h1 className="text-2xl font-bold mb-2">Resumen de Ejecución</h1>
+      <div className="summary-title-section">
+        <h1 className="summary-main-title">Resumen de Ejecución</h1>
 
-      {execution && (
-        <div className="text-gray-600">
-          <p>Checklist: <strong>{execution.checklist}</strong></p>
-          <p>Ejecutado por: <strong>{execution.user}</strong></p>
-          <p>Fecha: <strong>{formatDate(execution.timestamp)}</strong></p>
-        </div>
-      )}
+        {execution && (
+          <div className="summary-meta-grid">
+            <div className="summary-meta-item">
+              <span className="summary-meta-label">Checklist</span>
+              <span className="summary-meta-value">{execution.checklist}</span>
+            </div>
+            <div className="summary-meta-item">
+              <span className="summary-meta-label">Ejecutado por</span>
+              <span className="summary-meta-value">{execution.user}</span>
+            </div>
+            <div className="summary-meta-item">
+              <span className="summary-meta-label">Fecha de ejecución</span>
+              <span className="summary-meta-value">{formatDate(execution.timestamp)}</span>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
 
+    {/* Estados de carga y error */}
     {loading ? (
-      <div className="flex justify-center items-center p-8">
-        <div className="text-gray-500">Cargando datos...</div>
+      <div className="loading-state">
+        <div>Cargando datos...</div>
       </div>
     ) : error ? (
-      <div className="bg-red-50 text-red-600 p-4 rounded">
-        {error}
+      <div className="error-state">
+        <svg className="error-icon" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+        </svg>
+        <span>{error}</span>
       </div>
     ) : (
       <>
+        {/* Botón de revisión */}
         {showReviewButton() && (
-          <div className="mb-6">
+          <div className="action-buttons">
             <Link
               href={`/supervisor/review/${assignment.id}`}
-              className="inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
+              className="review-button"
             >
+              <svg className="review-button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
               Ir a revisión
             </Link>
           </div>
         )}
 
-        <div className="bg-white rounded shadow-sm p-4 border">
-          <h2 className="text-lg font-medium mb-4">Datos de la ejecución</h2>
-
-          <div className="border rounded overflow-hidden">
-            <div className="bg-gray-100 p-3">
-              <pre className="whitespace-pre-wrap break-all font-mono text-sm">
-                {JSON.stringify(execution, null, 2)}
-              </pre>
-            </div>
+        {/* Respuestas del Checklist */}
+        <div className="summary-card">
+          <div className="summary-card-header">
+            <h2 className="summary-card-title">Respuestas del Checklist</h2>
+            <p className="summary-card-subtitle">
+              {responseGroups.data.length} {responseGroups.data.length === 1 ? 'respuesta' : 'respuestas'} registradas
+            </p>
           </div>
 
-          {assignment && (
-            <div className="mt-6">
-              <h3 className="text-md font-medium mb-2">Información de la asignación</h3>
-              <div className="bg-gray-50 p-3 rounded">
-                <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                  <dt className="font-semibold">Estado:</dt>
-                  <dd>{assignment.estado}</dd>
-
-                  <dt className="font-semibold">Asignado a:</dt>
-                  <dd>{assignment.asignadoA}</dd>
-
-                  <dt className="font-semibold">Creado por:</dt>
-                  <dd>{assignment.creadoPor}</dd>
-
-                  <dt className="font-semibold">Fecha vencimiento:</dt>
-                  <dd>{formatDate(assignment.fechaVencimiento)}</dd>
-
-                  <dt className="font-semibold">Prioridad:</dt>
-                  <dd>{assignment.prioridad}</dd>
-                </dl>
+          <div className="summary-card-body">
+            {responseGroups.data.length === 0 ? (
+              <div className="loading-state">
+                No hay respuestas para mostrar en esta ejecución.
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="responses-container">
+                {responseGroups.data.map((respuesta, index) => (
+                  <div key={respuesta.pasoId || index} className="response-item">
+                    <div className="response-header">
+                      <div className="response-question">
+                        {respuesta.pasoId || `Paso ${index + 1}`}
+                      </div>
+                      {respuesta.valido === false && (
+                        <span className="summary-status-badge validation-invalid">
+                          Inválido
+                        </span>
+                      )}
+                    </div>
+                    <div className="response-value">
+                      {renderFieldValue(respuesta)}
+                    </div>
+                    {respuesta.errores && respuesta.errores.length > 0 && (
+                      <div className="validation-errors">
+                        <ul className="validation-error-list">
+                          {respuesta.errores.map((error, errorIndex) => (
+                            <li key={errorIndex}>{error}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* Información de la Asignación */}
+        {assignment && (
+          <div className="summary-card">
+            <div className="summary-card-header">
+              <h2 className="summary-card-title">Información de la Asignación</h2>
+            </div>
+            <div className="summary-card-body">
+              <div className="assignment-info-grid">
+                <div className="assignment-info-item">
+                  <span className="assignment-info-label">Estado</span>
+                  <span className={`summary-status-badge ${assignment.estado === 'Completada' ? 'status-completed' :
+                    assignment.estado === 'En revisión' ? 'status-in-review' :
+                      'status-active'
+                    }`}>
+                    {assignment.estado}
+                  </span>
+                </div>
+
+                <div className="assignment-info-item">
+                  <span className="assignment-info-label">Asignado a</span>
+                  <span className="assignment-info-value">{assignment.asignadoA}</span>
+                </div>
+
+                <div className="assignment-info-item">
+                  <span className="assignment-info-label">Creado por</span>
+                  <span className="assignment-info-value">{assignment.creadoPor}</span>
+                </div>
+
+                <div className="assignment-info-item">
+                  <span className="assignment-info-label">Fecha de vencimiento</span>
+                  <span className="assignment-info-value">{formatDate(assignment.fechaVencimiento)}</span>
+                </div>
+
+                <div className="assignment-info-item">
+                  <span className="assignment-info-label">Prioridad</span>
+                  <span className={`summary-status-badge ${assignment.prioridad === 'Alta' ? 'priority-high' :
+                    assignment.prioridad === 'Media' ? 'priority-medium' :
+                      'priority-low'
+                    }`}>
+                    {assignment.prioridad}
+                  </span>
+                </div>
+
+                <div className="assignment-info-item">
+                  <span className="assignment-info-label">Checklist</span>
+                  <span className="assignment-info-value">{assignment.checklistNombre}</span>
+                </div>
+              </div>
+
+              {assignment.notas && (
+                <div className="assignment-notes">
+                  <div className="assignment-notes-label">Notas adicionales</div>
+                  <div className="assignment-notes-content">{assignment.notas}</div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+
       </>
     )}
   </div>
 );
-}
