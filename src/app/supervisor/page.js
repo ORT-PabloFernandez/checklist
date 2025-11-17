@@ -14,6 +14,7 @@ export default function SupervisorDashboard() {
   const [showForm, setShowForm] = useState(false);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [taskListRefreshKey, setTaskListRefreshKey] = useState(0);
+  const [taskBeingEdited, setTaskBeingEdited] = useState(null);
   const router = useRouter();
   const { currentUser } = useCurrentUser();
   
@@ -36,7 +37,13 @@ export default function SupervisorDashboard() {
 
   const handleTaskFormSuccess = () => {
     setShowTaskForm(false);
+    setTaskBeingEdited(null);
     setTaskListRefreshKey(prev => prev + 1);
+  };
+
+  const handleEditTask = (task) => {
+    setTaskBeingEdited(task);
+    setShowTaskForm(true);
   };
 
   // Mostrar pantalla de carga si no tenemos usuario aún
@@ -89,7 +96,11 @@ export default function SupervisorDashboard() {
           <h2 className="text-xl font-semibold">Tareas</h2>
           
           <button
-            onClick={() => setShowTaskForm(!showTaskForm)}
+            onClick={() => {
+              // Nueva tarea: limpiar cualquier edición previa
+              setTaskBeingEdited(null);
+              setShowTaskForm(!showTaskForm);
+            }}
             className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded flex items-center"
           >
             {showTaskForm ? 'Ocultar formulario' : 'Nueva Tarea'}
@@ -98,11 +109,18 @@ export default function SupervisorDashboard() {
 
         {showTaskForm && (
           <div className="mb-8">
-            <TaskBuilderForm onSuccess={handleTaskFormSuccess} />
+            <TaskBuilderForm
+              onSuccess={handleTaskFormSuccess}
+              mode={taskBeingEdited ? 'edit' : 'create'}
+              initialTask={taskBeingEdited || null}
+            />
           </div>
         )}
 
-        <TaskList key={taskListRefreshKey} />
+        <TaskList
+          key={taskListRefreshKey}
+          onEdit={handleEditTask}
+        />
       </div>
     </div>
   );

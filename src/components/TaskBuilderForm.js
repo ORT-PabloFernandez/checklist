@@ -4,7 +4,7 @@
 import { useTaskBuilder } from '../app/hooks/useTaskBuilder';
 import StepForm from './StepForm';
 
-export default function TaskBuilderForm({ onSuccess }) {
+export default function TaskBuilderForm({ onSuccess, mode = 'create', initialTask }) {
   const {
     formData,
     pasos,
@@ -17,11 +17,15 @@ export default function TaskBuilderForm({ onSuccess }) {
     handleRemoveStep,
     handleStepChange,
     handleSubmit
-  } = useTaskBuilder({ onSuccess });
+  } = useTaskBuilder({ onSuccess, initialTask });
+
+  const isEditMode = mode === 'edit' || Boolean(initialTask);
 
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded shadow-sm p-4 border">
-      <h3 className="text-lg font-medium mb-4">Nueva Tarea</h3>
+      <h3 className="text-lg font-medium mb-4">
+        {isEditMode ? 'Editar Tarea' : 'Nueva Tarea'}
+      </h3>
 
       {error && (
         <div className="bg-red-50 text-red-600 p-3 rounded mb-4 text-sm">
@@ -100,7 +104,11 @@ export default function TaskBuilderForm({ onSuccess }) {
           className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
           disabled={saving}
         >
-          {saving ? 'Guardando...' : 'Guardar tarea'}
+          {saving
+            ? 'Guardando...'
+            : isEditMode
+              ? 'Guardar cambios'
+              : 'Guardar tarea'}
         </button>
       </div>
     </form>

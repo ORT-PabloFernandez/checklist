@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useCustomTasks } from '../lib/state';
 import { formatDate } from '../lib/utils';
 
-export default function TaskList() {
+export default function TaskList({ onEdit }) {
   const { tasks, loading, error, deleteTask } = useCustomTasks();
   const [deletingId, setDeletingId] = useState(null);
 
@@ -68,6 +68,15 @@ export default function TaskList() {
             </div>
 
             <div className="flex items-center space-x-2">
+              {onEdit && (
+                <button
+                  type="button"
+                  onClick={() => onEdit(task)}
+                  className="text-sm text-blue-600 hover:text-blue-700"
+                >
+                  Editar
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => handleDelete(task.id)}

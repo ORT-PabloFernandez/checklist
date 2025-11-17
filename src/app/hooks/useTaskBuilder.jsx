@@ -1,25 +1,10 @@
 // app/hooks/useTaskBuilder.js
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCustomTasks, useCurrentUser } from '../../lib/state';
 import { slugify } from '../../lib/utils';
-
-function createEmptyStep() {
-  return {
-    localId: crypto.randomUUID(),
-    descripcion: '',
-    tipo_campo: 'texto',
-    obligatorio: false,
-    opcionesTexto: '',
-    numeroMin: '',
-    numeroMax: '',
-    textoMaxLen: '',
-    condicionActiva: false,
-    condicionPasoId: '',
-    condicionValor: ''
-  };
-}
+import { useStepsBuilder } from './useStepsBuilder';
 
 function validateForm(formData, pasos) {
   if (!formData.nombre.trim()) {
@@ -155,8 +140,8 @@ function buildTaskPayload({ formData, pasos, currentUser }) {
   };
 }
 
-export function useTaskBuilder({ onSuccess } = {}) {
-  const { createTask } = useCustomTasks();
+export function useTaskBuilder({ onSuccess, initialTask } = {}) {
+  const { createTask, updateTask } = useCustomTasks();
   const { currentUser } = useCurrentUser();
 
   const [formData, setFormData] = useState({
@@ -164,19 +149,30 @@ export function useTaskBuilder({ onSuccess } = {}) {
     descripcion: ''
   });
 
-  const [pasos, setPasos] = useState([]);
+  useEffect(() => {
+    if (initialTask) {
+      setFormData({
+        nombre: initialTask.nombre || '',
+        descripcion: initialTask.descripcion || ''
+      });
+    }
+  }, [initialTask]);
+
+  const {
+    pasos,
+    stepOptions,
+    handleAddStep,
+    handleRemoveStep,
+    handleStepChange,
+    resetSteps
+  } = useStepsBuilder(initialTask);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [saving, setSaving] = useState(false);
 
-  const stepOptions = pasos.map((paso, index) => ({
-    value: (index + 1).toString(),
-    label: `Paso ${index + 1}: ${paso.descripcion || 'Sin descripción'}`
-  }));
-
   const resetForm = () => {
     setFormData({ nombre: '', descripcion: '' });
-    setPasos([]);
+    resetSteps();
   };
 
   const handleGeneralChange = (event) => {
@@ -187,25 +183,8 @@ export function useTaskBuilder({ onSuccess } = {}) {
     }));
   };
 
-  const handleAddStep = () => {
-    setPasos(prev => [...prev, createEmptyStep()]);
-  };
-
-  const handleRemoveStep = (localId) => {
-    setPasos(prev => prev.filter(step => step.localId !== localId));
-  };
-
-  const handleStepChange = (localId, field, value) => {
-    setPasos(prev =>
-      prev.map(step =>
-        step.localId === localId
-          ? { ...step, [field]: value }
-          : step
-      )
-    );
-  };
-
   const handleSubmit = (event) => {
+    // Para que no haga submit el formulario y se actualice la pagina
     event.preventDefault();
     setError(null);
     setSuccess(null);
@@ -219,9 +198,29 @@ export function useTaskBuilder({ onSuccess } = {}) {
     try {
       setSaving(true);
       const payload = buildTaskPayload({ formData, pasos, currentUser });
-      createTask(payload);
-      setSuccess('Tarea creada con éxito.');
-      resetForm();
+
+      if (initialTask && initialTask.id) {
+        // Si es edición de una tarea existente actualizamos la tarea
+        const updatedTask = {
+          ...initialTask,
+          ...payload,
+          id: initialTask.id
+        };
+
+        const successUpdate = updateTask(updatedTask);
+        if (!successUpdate) {
+          setError('Ocurrió un error al actualizar la tarea. Intente nuevamente.');
+          return;
+        }
+
+        setSuccess('Tarea actualizada con éxito.');
+      } else {
+        // Si es creación de una nueva tarea creamos la tarea
+        createTask(payload);
+        setSuccess('Tarea creada con éxito.');
+        resetForm();
+      }
+
       onSuccess?.();
     } catch (err) {
       console.error('Error al guardar la tarea personalizada:', err);

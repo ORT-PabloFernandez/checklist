@@ -8,7 +8,8 @@ import { getCurrentUser, setCurrentUser, listAssignments, saveAssignment, update
   initializeDefaultAssignments,
   listCustomTasks,
   saveCustomTask,
-  deleteCustomTask } from './storage';
+  deleteCustomTask,
+  updateCustomTask } from './storage';
 import { isPasoVisible, getVisibilityMap } from './conditions';
 import { validateField } from './validation';
 
@@ -149,6 +150,9 @@ export function useCustomTasks() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Carga las tareas personalizadas, todos los metodos de custom tasks usan este metodo para renderizar unicamente una vez o 
+  // cuando se actualiza/cambia la lista de tareas, loadTasks()
+
   const loadTasks = useCallback(() => {
     setLoading(true);
     try {
@@ -178,6 +182,19 @@ export function useCustomTasks() {
     }
   }, [loadTasks]);
 
+  const updateTask = useCallback((task) => {
+    try {
+      const success = updateCustomTask(task);
+      if (success) {
+        loadTasks();
+      }
+      return success;
+    } catch (err) {
+      console.error('Error updating custom task:', err);
+      return false;
+    }
+  }, [loadTasks]);
+
   const removeTask = useCallback((id) => {
     try {
       const success = deleteCustomTask(id);
@@ -197,7 +214,8 @@ export function useCustomTasks() {
     error,
     loadTasks,
     createTask,
-    deleteTask: removeTask
+    deleteTask: removeTask,
+    updateTask
   };
 }
 /**

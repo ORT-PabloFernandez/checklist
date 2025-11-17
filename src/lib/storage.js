@@ -352,6 +352,47 @@ export function saveCustomTask(task) {
 }
 
 /**
+ * Update an existing custom task
+ * @param {Object} task - Task definition with an existing id
+ * @returns {boolean} Whether the operation was successful
+ */
+export function updateCustomTask(task) {
+  try {
+    const tasks = listCustomTasks();
+
+    if (!task.id) {
+      console.error('Task id is required to update a custom task');
+      return false;
+    }
+
+    const index = tasks.findIndex(t => t.id === task.id);
+    if (index === -1) {
+      console.error(`Custom task with ID ${task.id} not found`);
+      return false;
+    }
+
+    const updatedTask = { ...tasks[index], ...task };
+
+    // Normalizo los ids de cada paso para asegurar que sean secuenciales
+    if (Array.isArray(updatedTask.pasos)) {
+      updatedTask.pasos = updatedTask.pasos.map((paso, idx) => ({
+        ...paso,
+        id: idx + 1
+      }));
+    } else {
+      updatedTask.pasos = [];
+    }
+
+    tasks[index] = updatedTask;
+    localStorage.setItem(KEYS.CUSTOM_TASKS, JSON.stringify(tasks));
+    return true;
+  } catch (error) {
+    console.error('Error updating custom task:', error);
+    return false;
+  }
+}
+
+/**
  * Delete a custom task by ID
  * @param {string} id - Task ID
  * @returns {boolean} Whether the operation was successful
