@@ -19,27 +19,19 @@ export function useCurrentUser() {
   const [currentUser, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-
-  // Default users for the system
-  const defaultUsers = [
-    { email: 'supervisor@ort.edu.ar', role: 'Supervisor', name: 'Supervisor' },
-    { email: 'Nestor.Wilke@ejemplo.com', role: 'Colaborador', name: 'Nestor Wilke', avatar: 'https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Nestor%20Wilke.jpg' }
-  ];
-
   // Load user on mount
   useEffect(() => {
     const initializeUser = async () => {
       setIsLoading(true);
       try {
         let user = getCurrentUser();
-        console.log('🔄 Loading user from storage:', user);
 
         if (user) {
           setUser(user);
         }
-        // Si no hay usuario, no hacemos nada - se mostrarán los botones de login
+        // Si no hay usuario, logueamos el error
       } catch (error) {
-        console.error('❌ Error loading user:', error);
+        console.error('Error loading user:', error);
       } finally {
         setIsLoading(false);
       }
@@ -50,7 +42,6 @@ export function useCurrentUser() {
 
   // Update user in state and storage
   const updateCurrentUser = useCallback((user) => {
-    console.log('🔄 Updating user:', user);
     if (user === null) {
       // caso de logout - limpiar estado y almacenamiento
       setUser(null);
@@ -63,7 +54,6 @@ export function useCurrentUser() {
 
 
   const logoutUser = useCallback(() => {
-    console.log('🚪 Executing logout from hook');
     setUser(null);
     // No llamamos a setCurrentUser(null) aquí porque clearAuth ya limpia el storage
   }, []);
@@ -96,6 +86,12 @@ export function useAssignments() {
     setAssignments(data);
     setLoading(false);
   }, []);
+  
+  // Refresh assignments (public method to refresh from outside)
+  const refreshAssignments = useCallback(() => {
+    loadAssignments();
+  }, [loadAssignments]);
+  
 
   // Create a new assignment
   const createAssignment = useCallback((assignment) => {
@@ -146,6 +142,7 @@ export function useAssignments() {
     assignments,
     loading,
     loadAssignments,
+    refreshAssignments,
     createAssignment,
     updateAssignment: updateAssignmentState
   };

@@ -6,6 +6,7 @@ import { decodeJWT, translateRole } from '@/lib/utils';
 import { setCurrentUser } from '@/lib/storage';
 import { getEndpointUrl, TOKEN_KEY } from '@/lib/config';
 import '../auth.css';
+import AuthGuard from '@/components/AuthGuard';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -49,16 +50,16 @@ export default function LoginPage() {
       }
 
       const data = await response.json();
-      
+
       if (data.token) {
         localStorage.setItem(TOKEN_KEY, data.token);
         const userInfo = decodeJWT(data.token);
 
-        if(!userInfo) {
+        if (!userInfo) {
           setError('Error al decodificar el token');
           return;
         }
-                
+
         const user = {
           email: userInfo.email,
           role: translateRole(userInfo.role),
@@ -69,9 +70,13 @@ export default function LoginPage() {
           setError('Error al obtener el usuario');
           return;
         }
-        
+
         setCurrentUser(user);
-        
+
+        // Disparar evento del window, para que luego el navbar pueda leer cuando un usuario se logueo
+        // o se deslogueo y recargue sus opciones
+        window.dispatchEvent(new CustomEvent('userUpdate', { detail: { user } }))
+
         const rolePath = user.role.toLowerCase();
         rolePath === 'supervisor'
           ? router.push('/supervisor')
@@ -86,65 +91,67 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <div>
-          <h2 className="auth-title">
-            Iniciar sesión
-          </h2>
-        </div>
-        
-        {error && (
-          <div className="error-alert" role="alert">
-            <span>{error}</span>
-          </div>
-        )}
-
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <div>
-              <label htmlFor="email" className="sr-only">Email</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="input-field top"
-                placeholder="Email"
-                value={formData.email}
-                onChange={handleChange}
-                disabled={isLoading}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">Contraseña</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="input-field bottom"
-                placeholder="Contraseña"
-                value={formData.password}
-                onChange={handleChange}
-                disabled={isLoading}
-              />
-            </div>
-          </div>
-
+    <AuthGuard isPublic={true}>
+      <div className="auth-container">
+        <div className="auth-card">
           <div>
-            <button
-              type="submit"
-              className="submit-button"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
-            </button>
+            <h2 className="auth-title">
+              Iniciar sesión
+            </h2>
           </div>
-        </form>
+
+          {error && (
+            <div className="error-alert" role="alert">
+              <span>{error}</span>
+            </div>
+          )}
+
+          <form className="auth-form" onSubmit={handleSubmit}>
+            <div className="form-group">
+              <div>
+                <label htmlFor="email" className="sr-only">Email</label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  className="input-field top"
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                />
+              </div>
+              <div>
+                <label htmlFor="password" className="sr-only">Contraseña</label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  className="input-field bottom"
+                  placeholder="Contraseña"
+                  value={formData.password}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                className="submit-button"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </AuthGuard>
   );
 }
