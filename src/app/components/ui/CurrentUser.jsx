@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FaSignOutAlt, FaUserCog } from 'react-icons/fa';
+import { FaSignOutAlt, FaUserCog, FaUser } from 'react-icons/fa';
 import './currentUser.css';
 
 const CurrentUser = ({ currentUser, logout }) => {
@@ -41,10 +41,14 @@ const CurrentUser = ({ currentUser, logout }) => {
         <span className="sr-only">Abrir menú de usuario</span>
         <div className="user-button-content">
           <div className="user-avatar">
-            <img
-              src={currentUser.avatar}
-              alt={`Foto de ${currentUser.name}`}
-            />
+            {currentUser.avatar ? (
+              <img
+                src={currentUser.avatar}
+                alt={`Foto de ${currentUser.name}`}
+              />
+            ) : (
+              <FaUser className="avatar-icon" />
+            )}
           </div>
           <span className="user-name">{currentUser.name}</span>
         </div>

@@ -31,9 +31,9 @@ export default function Home() {
 
   // Datos de ejemplo para usuarios destacados
   const featuredUsers = [
-    { id: 1, name: 'Alex Wilber', role: 'Desarrollador Senior', completion: 92, image: '/images/Alex Wilber.jpg' },
-    { id: 2, name: 'Adele Vance', role: 'Diseñadora UX', completion: 88, image: '/images/Adele Vance.jpg' },
-    { id: 3, name: 'Diego Siciliani', role: 'Product Manager', completion: 76, image: '/images/Diego Siciliani.jpg' },
+    { id: 1, name: 'Alex Wilber', role: 'Desarrollador Senior', completion: 92, image: '/images/Alex Wilber.jpg', avatar: 'https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Alex%20Wilber.jpg'},
+    { id: 2, name: 'Adele Vance', role: 'Diseñadora UX', completion: 88, image: '/images/Adele Vance.jpg', avatar: 'https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Adele%20Vance.jpg'},
+    { id: 3, name: 'Diego Siciliani', role: 'Product Manager', completion: 76, image: '/images/Diego Siciliani.jpg', avatar: 'https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Diego%20Siciliani.jpg'},
   ];
 
   // Datos de ejemplo para actividades recientes
@@ -114,7 +114,7 @@ export default function Home() {
               <div key={user.id} className="user-card">
                 <div className="user-card-header">
                   <div className="user-avatar">
-                    <Image src={user.image} alt={user.name} width={50} height={50} className="avatar-image" />
+                    <img src={user.avatar || user.image} alt={user.name} width={50} height={50} className="avatar-image" />
                   </div>
                   <div className="user-info">
                     <h3>{user.name}</h3>
@@ -145,7 +145,7 @@ export default function Home() {
                 <div className="activity-content">
                   <p>
                     <strong>{activity.user}</strong> {activity.action} 
-                    {activity.target && <span className="activity-target">{activity.target}</span>}
+                    {activity.target && <span className="activity-target"> {activity.target}</span>}
                   </p>
                   <span className="activity-time">{activity.time}</span>
                 </div>
