@@ -12,6 +12,7 @@ import { jwtDecode } from 'jwt-decode';
  * @returns {string} Slugified text
  */
 export function slugify(text) {
+  if (!text) return '';
   return text
     .toString()
     .toLowerCase()

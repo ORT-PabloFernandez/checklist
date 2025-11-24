@@ -1,18 +1,14 @@
 'use client';
 
-import { API_ENDPOINTS, getEndpointUrl, TOKEN_KEY } from "./config";
-
-//import historyDummy from './historyDummy.json';
-/**
- * Utilities for localStorage operations to persist data
- */
+import { getEndpointUrl, TOKEN_KEY } from "./config";
 
 // Storage keys
 const KEYS = {
   HISTORY: 'checklist.history',
   ASSIGNMENTS: 'checklist:assignments',
   EXECUTIONS: 'checklist:executions',
-  CURRENT_USER: 'checklist:user'
+  CURRENT_USER: 'checklist:user',
+  TASKS: 'tasks'
 };
 
 /**
@@ -40,7 +36,7 @@ export function saveAssignment(assignment) {
 
     // Generate ID if not present
     if (!assignment.id) {
-      assignment.id = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString();
+      assignment.id = Date.now().toString();
     }
 
     // Add to assignments list
@@ -101,6 +97,122 @@ export function getAssignment(id) {
 }
 
 /**
+ * Get all tasks from localStorage
+ * @returns {Array} List of tasks
+ */
+export function listTasks() {
+  try {
+    const stored = localStorage.getItem(KEYS.TASKS);
+    return stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    console.error('Error loading tasks:', error);
+    return [];
+  }
+}
+
+/**
+ * Get a specific task by ID
+ * @param {string} id - Task ID
+ * @returns {Object|null} The task or null if not found
+ */
+export function getTask(id) {
+  try {
+    const tasks = listTasks();
+    return tasks.find(t => t.id === id) || null;
+  } catch (error) {
+    console.error(`Error getting task ${id}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Save a new task
+ * @param {Object} taskData - The task data to save
+ * @param {Object} currentUser - The current user creating the task
+ * @returns {string} The ID of the saved task
+ */
+export function saveTask(taskData, currentUser) {
+  try {
+    const tasks = listTasks();
+
+    // Normalize pasos structure for compatibility
+    const normalizedPasos = (taskData.pasos || []).map(paso => {
+      const type = paso.type;
+      return {
+        ...paso,
+        descripcion: paso.descripcion || paso.text || '',
+        tipo: type,
+        // Keep both for compatibility
+        text: paso.text || paso.descripcion || '',
+        type: type
+      };
+    });
+
+    const newTask = {
+      id: Date.now().toString(),
+      ...taskData,
+      pasos: normalizedPasos,
+      createdBy: currentUser?.email || currentUser?.id || null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    tasks.push(newTask);
+    localStorage.setItem(KEYS.TASKS, JSON.stringify(tasks));
+
+    return newTask.id;
+  } catch (error) {
+    console.error('Error saving task:', error);
+    throw error;
+  }
+}
+
+/**
+ * Update an existing task
+ * @param {string} taskId - The ID of the task to update
+ * @param {Object} taskData - The updated task data
+ * @returns {boolean} Whether the operation was successful
+ */
+export function updateTask(taskId, taskData) {
+  try {
+    const tasks = listTasks();
+
+    const index = tasks.findIndex(t => t.id === taskId);
+    if (index === -1) {
+      console.error(`Task with ID ${taskId} not found`);
+      return false;
+    }
+
+    // Normalize pasos structure for compatibility
+    const normalizedPasos = (taskData.pasos || []).map(paso => {
+      const type = paso.type;
+      return {
+        ...paso,
+        descripcion: paso.descripcion || paso.text || '',
+        tipo: type,
+        // Keep both for compatibility
+        text: paso.text,
+        type: type
+      };
+    });
+
+    tasks[index] = {
+      ...tasks[index],
+      ...taskData,
+      pasos: normalizedPasos,
+      id: taskId,
+      updatedAt: new Date().toISOString()
+    };
+
+    localStorage.setItem(KEYS.TASKS, JSON.stringify(tasks));
+    return true;
+  } catch (error) {
+    console.error('Error updating task:', error);
+    return false;
+  }
+}
+
+/**
  * Delete an assignment by ID
  * @param {string} id - Assignment ID
  * @returns {boolean} Whether the operation was successful
@@ -134,7 +246,7 @@ export function saveExecution(execution) {
 
     // Generate ID if not present
     if (!execution.id) {
-      execution.id = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString();
+      execution.id = Date.now().toString();
     }
 
     // Add timestamp if not present

@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { validateGrupo } from '../lib/validation';
+import { validateGrupo } from '@/lib/validation';
+import { FIELD_TYPES } from '@/constants/fieldTypes';
 import ValidationHint from './ValidationHint';
 import FieldNumero from './FieldNumero';
 import FieldTexto from './FieldTexto';
@@ -56,81 +57,35 @@ export default function FieldGrupo({
     const fieldValue = groupValues[campo.nombre];
     const fieldValidation = validation.subfieldResults[campo.nombre] || { isValid: true, errors: [] };
     
-    switch (campo.tipo_campo) {
-      case 'numero':
-        return (
-          <FieldNumero
-            paso={campo}
-            value={fieldValue}
-            onChange={(value) => handleFieldChange(campo.nombre, value)}
-            disabled={disabled}
-          />
-        );
-      case 'texto':
-        return (
-          <FieldTexto
-            paso={campo}
-            value={fieldValue}
-            onChange={(value) => handleFieldChange(campo.nombre, value)}
-            disabled={disabled}
-          />
-        );
-      case 'select':
-        return (
-          <FieldSelect
-            paso={campo}
-            value={fieldValue}
-            onChange={(value) => handleFieldChange(campo.nombre, value)}
-            disabled={disabled}
-          />
-        );
-      case 'checkbox':
-        return (
-          <FieldCheckbox
-            paso={campo}
-            value={fieldValue}
-            onChange={(value) => handleFieldChange(campo.nombre, value)}
-            disabled={disabled}
-          />
-        );
-      case 'fecha':
-        return (
-          <FieldFecha
-            paso={campo}
-            value={fieldValue}
-            onChange={(value) => handleFieldChange(campo.nombre, value)}
-            disabled={disabled}
-          />
-        );
-      case 'foto':
-        return (
-          <FieldFoto
-            paso={campo}
-            value={fieldValue}
-            onChange={(value) => handleFieldChange(campo.nombre, value)}
-            disabled={disabled}
-          />
-        );
-      case 'archivo':
-        return (
-          <FieldArchivo
-            paso={campo}
-            value={fieldValue}
-            onChange={(value) => handleFieldChange(campo.nombre, value)}
-            disabled={disabled}
-          />
-        );
-      case 'firma':
-        return (
-          <FieldFirma
-            paso={campo}
-            value={fieldValue}
-            onChange={(value) => handleFieldChange(campo.nombre, value)}
-            disabled={disabled}
-          />
-        );
+    const fieldType = campo.tipo_campo || FIELD_TYPES.TEXT;
+    
+    // Props comunes para todos los campos
+    const commonProps = {
+      paso: campo,
+      value: fieldValue,
+      onChange: (value) => handleFieldChange(campo.nombre, value),
+      disabled: disabled
+    };
+    
+    switch(fieldType) {
+      case FIELD_TYPES.NUMBER:
+        return <FieldNumero {...commonProps} />;
+      case FIELD_TYPES.TEXT:
+        return <FieldTexto {...commonProps} />;
+      case FIELD_TYPES.SELECT:
+        return <FieldSelect {...commonProps} />;
+      case FIELD_TYPES.CHECKBOX:
+        return <FieldCheckbox {...commonProps} />;
+      case FIELD_TYPES.DATE:
+        return <FieldFecha {...commonProps} />;
+      case FIELD_TYPES.PHOTO:
+        return <FieldFoto {...commonProps} />;
+      case FIELD_TYPES.FILE:
+        return <FieldArchivo {...commonProps} />;
+      case FIELD_TYPES.SIGNATURE:
+        return <FieldFirma {...commonProps} />;
       default:
-        return <div>Tipo de campo no soportado: {campo.tipo_campo}</div>;
+        return <div className="text-red-500">Tipo de campo no soportado: {fieldType}</div>;
     }
   };
 
