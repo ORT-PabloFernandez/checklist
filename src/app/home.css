@@ -198,6 +198,11 @@
   object-fit: cover;
 }
 
+.notificationIcon {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
 .user-info h3 {
   font-size: 1rem;
   margin-bottom: 0.25rem;

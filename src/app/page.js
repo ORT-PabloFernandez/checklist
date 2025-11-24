@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { FaUserCheck, FaChartLine, FaUsers, FaBell } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { FaUserCheck, FaChartLine, FaUsers, FaBell, FaUser } from 'react-icons/fa';
 import Image from 'next/image';
 import Link from 'next/link';
 import './home.css';
@@ -11,6 +11,7 @@ import { useCurrentUser } from '@/lib/state';
 export default function Home() {
   const router = useRouter();
   const { currentUser } = useCurrentUser();
+  const [imageError, setImageError] = useState({});
 
   const handleDashboardClick = () => {
     if (currentUser) {
@@ -114,7 +115,11 @@ export default function Home() {
               <div key={user.id} className="user-card">
                 <div className="user-card-header">
                   <div className="user-avatar">
-                    <Image src={user.image} alt={user.name} width={50} height={50} className="avatar-image" />
+                    {user.avatar && !imageError ? (
+                      <Image src={user.avatar} alt={user.name} width={50} height={50} className="avatar-image" onError={() => setImageError(true)} />
+                    ) : (
+                      <FaUser className="notificationIcon" />
+                    )}
                   </div>
                   <div className="user-info">
                     <h3>{user.name}</h3>
@@ -145,7 +150,7 @@ export default function Home() {
                 <div className="activity-content">
                   <p>
                     <strong>{activity.user}</strong> {activity.action} 
-                    {activity.target && <span className="activity-target">{activity.target}</span>}
+                    {activity.target && <span className="activity-target"> {activity.target}</span>}
                   </p>
                   <span className="activity-time">{activity.time}</span>
                 </div>

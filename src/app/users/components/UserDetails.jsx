@@ -1,10 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import './user.css';
+import { FaUser } from 'react-icons/fa';
 
-const UserDetails = ({ user }) => {
+const UserDetails = ({ user, showBackButton = true }) => {
+  const [imageError, setImageError] = useState(false);
   if (!user) return <div>Cargando...</div>;
 
   return (
@@ -12,11 +14,16 @@ const UserDetails = ({ user }) => {
       <div className="user-details-card">
         <div className="user-details-header">
           <div className="user-details-avatar">
-            <img 
+            {user.avatar && !imageError ? (
+              <img 
               src={user.avatar} 
               alt={`Foto de ${user.name}`}
               className="user-details-image"
+              onError={() => setImageError(true)}
             />
+            ) : (
+              <FaUser className="user-details-image" />
+            )}
           </div>
           <h1 className="user-details-name">{user.name}</h1>
           <span className={`user-status 
@@ -55,13 +62,20 @@ const UserDetails = ({ user }) => {
               <p>{user.address}</p>
             </div>
           )}
+          {user.role && (
+            <div className="user-details-item">
+              <strong>Rol:</strong>
+              <p>{user.role}</p>
+            </div>
+          )}
         </div>
-        
-        <div className="user-details-footer">
-          <Link href="/users" className="back-button">
-            Volver a la lista
-          </Link>
-        </div>
+        {showBackButton && (
+          <div className="user-details-footer">
+            <Link href="/users" className="back-button">
+              Volver a la lista
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

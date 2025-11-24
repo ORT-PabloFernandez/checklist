@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import ReviewPanel from '../../../../components/ReviewPanel';
+import ExecutionSummary from '../../../../components/ExecutionSummary';
 import { getAssignment, getExecution } from '../../../../lib/storage';
 import { useCurrentUser } from '../../../../lib/state';
 
@@ -101,13 +102,7 @@ export default function ReviewPage() {
             <div className="bg-white rounded shadow-sm p-4 border mb-6">
               <h3 className="text-lg font-medium mb-4">Resultados de la Ejecución</h3>
               
-              <div className="border rounded overflow-hidden">
-                <div className="bg-gray-100 p-3 font-mono text-sm">
-                  <pre className="whitespace-pre-wrap break-all">
-                    {JSON.stringify(execution, null, 2)}
-                  </pre>
-                </div>
-              </div>
+              <ExecutionSummary execution={execution} />
             </div>
           )}
           

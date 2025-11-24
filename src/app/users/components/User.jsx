@@ -1,18 +1,30 @@
+'use client';
+
+import { useState } from 'react';
 import './user.css';
 import Link from 'next/link';
+import { FaUser } from 'react-icons/fa';
+
 
 export default function User({user}) {
+    const [imageError, setImageError] = useState(false);
+    
     return (
         <li key={user.id} className="user-item">
         <div className="user-content">
             <div className="user-info">
                 <Link href={`/users/${user.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                     <div className="user-avatar">
-                        <img 
-                        src={user.avatar} 
-                        alt={`Foto de ${user.name}`}
-                        className="user-image"
-                        />
+                        {user.avatar && !imageError ? (
+                            <img 
+                            src={user.avatar} 
+                            alt={`Foto de ${user.name}`}
+                            className="user-image"
+                            onError={() => setImageError(true)}
+                            />
+                        ) : (
+                            <FaUser className="user-image" />
+                        )}
                     </div>
                 </Link>
                 <div className="user-details">

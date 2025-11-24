@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { getExecution, getAssignment } from '../../../lib/storage';
 import { useCurrentUser } from '../../../lib/state';
 import { formatDate } from '../../../lib/utils';
+import ExecutionSummary from '../../../components/ExecutionSummary';
 
 export default function SummaryPage() {
   const params = useParams();
@@ -111,13 +112,7 @@ export default function SummaryPage() {
           <div className="bg-white rounded shadow-sm p-4 border">
             <h2 className="text-lg font-medium mb-4">Datos de la ejecución</h2>
             
-            <div className="border rounded overflow-hidden">
-              <div className="bg-gray-100 p-3">
-                <pre className="whitespace-pre-wrap break-all font-mono text-sm">
-                  {JSON.stringify(execution, null, 2)}
-                </pre>
-              </div>
-            </div>
+            <ExecutionSummary execution={execution} />
             
             {assignment && (
               <div className="mt-6">

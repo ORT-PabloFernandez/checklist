@@ -1,0 +1,172 @@
+[
+    {
+      "id": "1",
+      "name": "Adele Vance",
+      "avatar": "https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Adele%20Vance.jpg",
+      "email": "Adele.Vance@ejemplo.com",
+      "status": "registered",
+      "phone": "+54 11 4567 8901",
+      "website": "https://adele-vance.com",
+      "address": "Av. Libertador 1234, Buenos Aires, Argentina"
+    },
+    {
+      "id": "2",
+      "name": "Alex Wilber",
+      "avatar": "https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Alex%20Wilber.jpg",
+      "email": "Alex.Wilber@ejemplo.com",
+      "status": "in_progress",
+      "phone": "+1 212 555 2345",
+      "website": "https://alexwilber.net",
+      "address": "200 Broadway, New York, USA"
+    },
+    {
+      "id": "3",
+      "name": "Diego Siciliani",
+      "avatar": "https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Diego%20Siciliani.jpg",
+      "email": "Diego.Siciliani@ejemplo.com",
+      "status": "completed",
+      "phone": "+34 91 555 6789",
+      "website": "https://diegosiciliani.es",
+      "address": "Calle Mayor 45, Madrid, España"
+    },
+    {
+      "id": "4",
+      "name": "Grady Archie",
+      "avatar": "https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Grady%20Archie.jpg",
+      "email": "Grady.Archie@ejemplo.com",
+      "status": "registered",
+      "phone": "+44 20 7946 0012",
+      "website": "https://gradyarchie.uk",
+      "address": "10 Downing St, London, UK"
+    },
+    {
+      "id": "5",
+      "name": "Henrietta Mueller",
+      "avatar": "https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Henrietta%20Mueller.jpg",
+      "email": "Henrietta.Mueller@ejemplo.com",
+      "status": "in_progress",
+      "phone": "+49 30 6789 4321",
+      "website": "https://henriet.mueller.de",
+      "address": "Unter den Linden 55, Berlin, Alemania"
+    },
+    {
+      "id": "6",
+      "name": "Isaiah Langer",
+      "avatar": "https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Isaiah%20Langer.jpg",
+      "email": "Isaiah.Langer@ejemplo.com",
+      "status": "completed",
+      "phone": "+1 305 777 9988",
+      "website": "https://isaiahlanger.com",
+      "address": "Ocean Drive 321, Miami, USA"
+    },
+    {
+      "id": "7",
+      "name": "Joni Sherman",
+      "avatar": "https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Joni%20Sherman.jpg",
+      "email": "Joni.Sherman@ejemplo.com",
+      "status": "registered",
+      "phone": "+61 2 9876 5432",
+      "website": "https://jonisherman.au",
+      "address": "George St 89, Sydney, Australia"
+    },
+    {
+      "id": "8",
+      "name": "Laura E Fernandez",
+      "avatar": "https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Laura%20E%20Fernandez.jpg",
+      "email": "Laura.Fernandez@ejemplo.com",
+      "status": "in_progress",
+      "phone": "+54 221 4321 5678",
+      "website": "https://laurafernandez.com.ar",
+      "address": "Calle 50 N° 234, La Plata, Argentina"
+    },
+    {
+      "id": "9",
+      "name": "Lee Gu",
+      "avatar": "https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Lee%20Gu.jpg",
+      "email": "Lee.Gu@ejemplo.com",
+      "status": "completed",
+      "phone": "+86 21 4567 1234",
+      "website": "https://leegu.cn",
+      "address": "Nanjing Rd 250, Shanghái, China"
+    },
+    {
+      "id": "10",
+      "name": "Lidia Holloway",
+      "avatar": "https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Lidia%20Holloway.jpg",
+      "email": "Lidia.Holloway@ejemplo.com",
+      "status": "registered",
+      "phone": "+1 415 888 7654",
+      "website": "https://lidiahollo.com",
+      "address": "Market St 678, San Francisco, USA"
+    },
+    {
+      "id": "11",
+      "name": "Lynne Robbins",
+      "avatar": "https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Lynne%20Robbins.jpg",
+      "email": "Lynne.Robbins@ejemplo.com",
+      "status": "in_progress",
+      "phone": "+33 1 8765 4321",
+      "website": "https://lynnerobbins.fr",
+      "address": "Rue de Rivoli 98, París, Francia"
+    },
+    {
+      "id": "12",
+      "name": "Megan Bowen",
+      "avatar": "https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Megan%20Bowen.jpg",
+      "email": "Megan.Bowen@ejemplo.com",
+      "status": "completed",
+      "phone": "+1 617 123 4567",
+      "website": "https://meganbowen.org",
+      "address": "Beacon St 345, Boston, USA"
+    },
+    {
+      "id": "13",
+      "name": "Miriam Graham",
+      "avatar": "https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Miriam%20Graham.jpg",
+      "email": "Miriam.Graham@ejemplo.com",
+      "status": "registered",
+      "phone": "+1 312 654 7890",
+      "website": "https://miriamgraham.com",
+      "address": "Michigan Ave 450, Chicago, USA"
+    },
+    {
+      "id": "14",
+      "name": "Nestor Wilke",
+      "avatar": "https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Nestor%20Wilke.jpg",
+      "email": "Nestor.Wilke@ejemplo.com",
+      "status": "in_progress",
+      "phone": "+54 261 432 1234",
+      "website": "https://nestorwilke.com.ar",
+      "address": "Av. San Martín 150, Mendoza, Argentina"
+    },
+    {
+      "id": "15",
+      "name": "Pablo Fernandez",
+      "avatar": "https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Pablo%20Fernandez.jpg",
+      "email": "Pablo.Fernandez@ejemplo.com",
+      "status": "completed",
+      "phone": "+54 11 7654 3210",
+      "website": "https://pablofernandez.ar",
+      "address": "Av. Corrientes 987, Buenos Aires, Argentina"
+    },
+    {
+      "id": "16",
+      "name": "Patti Fernandez",
+      "avatar": "https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Patti%20Fernandez.jpg",
+      "email": "Patti.Fernandez@ejemplo.com",
+      "status": "registered",
+      "phone": "+34 93 654 3210",
+      "website": "https://pattifernandez.es",
+      "address": "Gran Via 111, Barcelona, España"
+    },
+    {
+      "id": "17",
+      "name": "Pradeep Gupta",
+      "avatar": "https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/public/img/Pradeep%20Gupta.jpg",
+      "email": "Pradeep.Gupta@ejemplo.com",
+      "status": "in_progress",
+      "phone": "+91 11 2345 6789",
+      "website": "https://pradeepgupta.in",
+      "address": "Connaught Place 76, Nueva Delhi, India"
+    }
+  ]

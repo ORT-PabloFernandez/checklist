@@ -14,8 +14,8 @@ const Menu = () => {
   const allNavLinks = [
     { name: 'Supervisor', path: '/supervisor', icon: <FaUserCheck className="navIcon" />, roles: ['Supervisor'] },
     { name: 'Colaborador', path: '/colaborador', icon: <FaUsers className="navIcon" />, roles: ['Colaborador'] },
-    { name: 'Seguimiento', path: '/tracking', icon: <FaClipboardList className="navIcon" />, roles: ['Supervisor', 'Colaborador'] },
-    { name: 'Administración', path: '/admin', icon: <FaClipboardList className="navIcon" />, roles: ['Supervisor', 'Colaborador'] },
+    //{ name: 'Seguimiento', path: '/tracking', icon: <FaClipboardList className="navIcon" />, roles: ['Supervisor', 'Colaborador'] },
+    // { name: 'Administración', path: '/admin', icon: <FaClipboardList className="navIcon" />, roles: ['Supervisor', 'Colaborador'] },
   ];
 
   // Filtrar por rol los botones que se le muestra al usuario
@@ -25,6 +25,7 @@ const Menu = () => {
 
   return (
     <div className="desktopNavLinks">
+      <div className="space-x-4"></div>
       {navLinks.map((link) => (
         <Link
           key={link.path}

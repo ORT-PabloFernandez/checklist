@@ -14,7 +14,11 @@ export default function UserDetailsPage() {
     const fetchUserDetails = async () => {
       try {
         // Obtener los datos de los usuarios
-        const response = await fetch('https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/src/data/usersv2.json');
+        
+        // Comento esta llamada por que github bloqueo el acceso a la ruta debido a muchas requests Error 429
+        //const response = await fetch('https://raw.githubusercontent.com/ORT-PabloFernandez/PNTP2-REACT-EJEMPLO/main/src/data/usersv2.json');
+        // Debe ir a buscar el archivo a la ruta de la carpeta data
+        const response = await fetch('/data/usersv2.json');
         const users = await response.json();
         
         // Buscar el usuario específico por ID

@@ -301,12 +301,6 @@ export default function AssignmentList({
                         >
                           Eliminar
                         </button>
-                        <button
-                          onClick={() => handleTaskAction('assign', task)}
-                          className="ml-2 px-2 py-1 bg-yellow-600 text-white rounded text-sm hover:bg-yellow-700"
-                        >
-                          Asignar
-                        </button>
                       </td>
                     </tr>
                   ))

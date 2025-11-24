@@ -4,40 +4,41 @@ import { useState } from 'react';
 import { useCurrentUser } from '../../lib/state';
 import { useDropzone } from 'react-dropzone';
 import { setCurrentUser, updateAvatar } from '@/lib/storage';
-import { useRouter } from 'next/navigation';
+import UserDetails from '../users/components/UserDetails';
 
 export default function EditUserData() {
-  const router = useRouter();
-  const { currentUser } = useCurrentUser();
-  const [formData, setFormData] = useState({
-    avatar: ''
-  });
+  const { currentUser, updateCurrentUser } = useCurrentUser();
   const [errors, setErrors] = useState({
     avatar: ''
   });
-
   const [preview, setPreview] = useState(null);
   const [selected, setSelected] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  // funcion para convertir el archivo a base64 
   function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-}
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  }
+
   const onDrop = (file) => {
     const f = file[0];
     setSelected(f);
     const url = URL.createObjectURL(f);
     setPreview(url);
+    setErrors({ avatar: '' });
   };
+  
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: { 'image/*': [] },
     multiple: false, 
   });
-
+  // console.log(currentUser);
   // Mostrar pantalla de carga si no tenemos usuario aún
   if (!currentUser) {
     return (
@@ -49,67 +50,93 @@ export default function EditUserData() {
     );
   }
 
-    const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+  const handleSubmit = async (e) => {
+    // Evito que se recargue la página
+    e.preventDefault();
+    // Si no se selecciona una imagen, muestro un error
+    if (!selected) {
+      setErrors({ avatar: 'Por favor selecciona una imagen' });
+      return;
+    }
+
+    setIsUpdating(true);
+    try {
+      const user = await updateAvatar(await fileToBase64(selected), currentUser.id);
+      const updatedUser = {
+        ...currentUser, 
+        avatar: user.avatar
+      };
+      setCurrentUser(updatedUser);
+      updateCurrentUser(updatedUser);
+      // Disparar evento para actualizar el navbar
+      window.dispatchEvent(new CustomEvent('userUpdate', { detail: { user: updatedUser } }));
+      setPreview(null);
+      setSelected(null);
+      setErrors({ avatar: '' });
+    } catch(error) {
+      setErrors({ avatar: error.message || 'Error al actualizar el avatar' });
+    } finally {
+      setIsUpdating(false);
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try{
-      const user = await updateAvatar(await fileToBase64(selected), currentUser.id);
-      setCurrentUser({
-        ...currentUser, 
-        avatar: user.avatar
-      })
-      const rolePath = currentUser.role.toLowerCase();
-        rolePath === 'supervisor'
-          ? router.push('/supervisor')
-          : router.push('/colaborador');
-    } catch(error) {
-      setErrors({avatar: error.msg});
-    }
-  }
-  
   return (
-      <div className="container mx-auto px-4 py-8">
-        <form onSubmit={handleSubmit}>
-        {/* Nombre de la tarea */}
-        <div {...getRootProps()}>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Avatar
-          </label>
-          <input
-            {...getInputProps()}
-          />
-          {
-          isDragActive
-            ? <p>Suelta la imagen aquí ...</p>
-            : <p>Arrastrá una imagen o clickeá para seleccionar</p>
-          }
-          {preview && (<img src={preview}></img>)}
-          {errors.avatar && <p className="text-red-600 text-sm mt-1">{errors.avatar}</p>}
-        </div>
+    <div className="container mx-auto px-4 py-8">
+      <UserDetails user={currentUser} showBackButton={false} />
+      
+      <div className="user-details-container">
+        <div className="user-details-card">
+          <form onSubmit={handleSubmit}>
+            <div className="user-details-info">
+              <div className="user-details-item">
+                <strong>Cambiar Avatar</strong>
+                <div {...getRootProps()} className="mt-4 p-4 border-2 border-gray-300 rounded-md cursor-pointer text-center">
+                  <input {...getInputProps()} />
+                  {isDragActive ? (
+                    <p>Suelta la imagen aquí ...</p>
+                  ) : (
+                    <p>Arrastrá una imagen o clickeá para seleccionar</p>
+                  )}
+                  {preview && (
+                    <div style={{ marginTop: '1rem' }}>
+                      <img 
+                        src={preview} 
+                        alt="Preview" 
+                        style={{ 
+                          maxWidth: '200px', 
+                          maxHeight: '200px', 
+                          borderRadius: '50%',
+                          objectFit: 'cover'
+                        }}
+                      />
+                    </div>
+                  )}
+                  {errors.avatar && (
+                    <p style={{ color: '#dc2626', fontSize: '0.875rem', marginTop: '0.5rem' }}>
+                      {errors.avatar}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
 
-        {/* Botones de acción */}
-        <div className="flex gap-2">
-          <button
-            type="submit"
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-          >
-            {'Actualizar usuario'}
-          </button>
+            <div className="user-details-footer">
+              <button
+                type="submit"
+                disabled={!selected || isUpdating}
+                className="back-button"
+                style={{ 
+                  backgroundColor: '#10b981', 
+                  color: 'white',
+                  cursor: (!selected || isUpdating) ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {isUpdating ? 'Actualizando...' : 'Actualizar Avatar'}
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
       </div>
+    </div>
   );
 }
