@@ -59,17 +59,13 @@ export const NotificationsBar = ({ }) => {
           aria-orientation="vertical"
           aria-labelledby="user-menu"
         >
+
           {
-            notifications.map((n) => {
-              return (
-                <div>
-                  {
-                    n.title
-                  }
-                </div>
-              )
+            (notifications ?? []).map((n) => {
+              <Notification key = {n.id} data = {n} />
             })
           }
+          
         </div>
       )}
     </div>
