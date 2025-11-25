@@ -24,21 +24,12 @@ export default function TaskForm({ taskId = null }) {
       const task = getTask(taskId);
       
       if (task) {
-        // Normalize pasos to have both old and new field names for compatibility
-        const normalizedPasos = (task.pasos || []).map(paso => ({
-          ...paso,
-          text: paso.text || paso.descripcion,
-          type: paso.type || paso.tipo,
-          descripcion: paso.descripcion || paso.text,
-          tipo: paso.tipo || paso.type
-        }));
-
         setFormData({
           nombre: task.nombre || '',
           description: task.description || '',
           category: task.category || '',
           slug: task.slug || '',
-          pasos: normalizedPasos
+          pasos: task.pasos,
         });
       }
     }
@@ -85,6 +76,8 @@ export default function TaskForm({ taskId = null }) {
     const validation = validateTaskForm(formData);
     if (!validation.isValid) {
       setErrors(validation.errors);
+      console.log('errores del formulario ' + JSON.stringify(errors))
+      console.log('Validaciones ' + JSON.stringify(validation))
       return;
     }
 

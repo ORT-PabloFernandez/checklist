@@ -29,8 +29,7 @@ export default function ExecutionSummary({ execution }) {
               nombre: task.nombre,
               pasos: task.pasos.map(paso => ({
                 id: paso.id,
-                descripcion: paso.descripcion,
-                tipo_campo: paso.tipo || paso.tipo_campo || 'texto',
+                tipo_campo: paso.type || paso.tipo_campo || 'texto',
                 obligatorio: true
               }))
             };
@@ -56,11 +55,10 @@ export default function ExecutionSummary({ execution }) {
       {checklist.pasos.map(paso => {
         const response = execution.respuestas.find(r => r.pasoId === paso.id);
         if (!response || !response.visible) return null;
-        // Si el paso es visible, lo renderiza
+        
         return (
           <div key={paso.id} className="border rounded p-3 bg-gray-50">
             <div className="flex items-start justify-between mb-2">
-              <p className="text-sm text-gray-800 flex-1">{paso.descripcion}</p>
               {response.valido ? (
                 <span className="text-green-600 ml-2">✓</span>
               ) : (

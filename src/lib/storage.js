@@ -135,15 +135,12 @@ export function saveTask(taskData, currentUser) {
   try {
     const tasks = listTasks();
 
-    // Normalize pasos structure for compatibility
-    const normalizedPasos = (taskData.pasos || []).map(paso => {
+    const pasos = (taskData.pasos || []).map(paso => {
       const type = paso.type;
       return {
         ...paso,
-        descripcion: paso.descripcion || paso.text || '',
         tipo: type,
-        // Keep both for compatibility
-        text: paso.text || paso.descripcion || '',
+        text: paso.text,
         type: type
       };
     });
@@ -151,7 +148,7 @@ export function saveTask(taskData, currentUser) {
     const newTask = {
       id: Date.now().toString(),
       ...taskData,
-      pasos: normalizedPasos,
+      pasos: pasos,
       createdBy: currentUser?.email || currentUser?.id || null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
@@ -183,14 +180,11 @@ export function updateTask(taskId, taskData) {
       return false;
     }
 
-    // Normalize pasos structure for compatibility
-    const normalizedPasos = (taskData.pasos || []).map(paso => {
+    const pasos = (taskData.pasos || []).map(paso => {
       const type = paso.type;
       return {
         ...paso,
-        descripcion: paso.descripcion || paso.text || '',
         tipo: type,
-        // Keep both for compatibility
         text: paso.text,
         type: type
       };
@@ -199,7 +193,7 @@ export function updateTask(taskId, taskData) {
     tasks[index] = {
       ...tasks[index],
       ...taskData,
-      pasos: normalizedPasos,
+      pasos: pasos,
       id: taskId,
       updatedAt: new Date().toISOString()
     };

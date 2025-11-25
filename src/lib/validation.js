@@ -277,15 +277,15 @@ export function validateTaskForm(formData) {
     
     // Validate each paso
     formData.pasos.forEach((paso, index) => {
-      // Validate paso text/descripcion (required)
-      const textValidation = validateTexto(paso.text || paso.descripcion, { obligatorio: true });
+      // Validate paso text
+      const textValidation = validateTexto(paso.text, { obligatorio: true });
       if (!textValidation.isValid) {
         pasoErrors.push(`Paso ${index + 1}: ${textValidation.errors[0] || 'debe tener un texto'}`);
         isValid = false;
       }
 
       // Validate paso type/tipo
-      const pasoType = paso.type || paso.tipo;
+      const pasoType = paso.type;
       if (!pasoType || !Object.values(FIELD_TYPES).includes(pasoType)) {
         pasoErrors.push(`Paso ${index + 1}: tiene un tipo inválido (${pasoType})`);
         isValid = false;

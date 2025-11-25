@@ -112,7 +112,7 @@ export default function TaskFormItems({ items, onItemsChange, errors }) {
         </div>
       )}
 
-      {errors.items && <p className="text-red-600 text-sm mt-2">{errors.items}</p>}
+      {errors.pasos && <p className="text-red-600 text-sm mt-2">{errors.pasos}</p>}
     </div>
   );
 }

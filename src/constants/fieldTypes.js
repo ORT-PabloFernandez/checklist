@@ -1,4 +1,3 @@
-// Eliminar la función normalizeFieldType y dejar solo las constantes
 export const FIELD_TYPES = {
   TEXT: 'texto',
   NUMBER: 'numero',

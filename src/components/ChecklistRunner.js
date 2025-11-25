@@ -6,6 +6,7 @@ import { getChecklistBySlug } from '../lib/loader';
 import { useExecutionState, useCurrentUser } from '../lib/state';
 import StepRenderer from './StepRenderer';
 import { updateAssignment } from '../lib/storage';
+import { FIELD_TYPES } from '@/constants/fieldTypes';
 
 export default function ChecklistRunner({ assignmentId, readOnly = false }) {
   const [checklist, setChecklist] = useState(null);
@@ -137,33 +138,72 @@ export default function ChecklistRunner({ assignmentId, readOnly = false }) {
         )}
       </div>
       
-      {checklist.pasos && checklist.pasos.map((paso) => (
-        <div key={paso.id} className={`mb-6 ${!visibilityMap[paso.id] ? 'hidden' : ''}`}>
-          <div className="mb-2">
-            <label className="block font-medium">
-              {paso.descripcion}
-              {paso.obligatorio && <span className="text-red-500 ml-1">*</span>}
-            </label>
-            {paso.unidad && !['grupo', 'foto', 'archivo', 'firma', 'checkbox'].includes(paso.tipo_campo) && (
-              <span className="text-sm text-gray-500">{paso.unidad}</span>
-            )}
-          </div>
-          
-          <StepRenderer
-            paso={paso}
-            value={responses[paso.id]}
-            onChange={(value) => updateResponse(paso.id, value)}
-            disabled={readOnly}
-            isVisible={visibilityMap[paso.id]}
-          />
-          
-          {validationMap[paso.id] && !validationMap[paso.id].isValid && (
-            <div className="text-sm text-red-600 mt-1">
-              {validationMap[paso.id].errors.join(', ')}
+      {checklist.pasos && checklist.pasos.map((paso) => {
+        const fieldType = paso.type || paso.tipo_campo;
+        const isFieldGroup = fieldType === FIELD_TYPES.GROUP;
+        const isFileType = [
+          FIELD_TYPES.PHOTO, 
+          FIELD_TYPES.FILE, 
+          FIELD_TYPES.SIGNATURE
+        ].includes(fieldType);
+        const isCheckbox = fieldType === FIELD_TYPES.CHECKBOX;
+        
+        return (
+          <div 
+            key={paso.id} 
+            className={`mb-6 p-4 rounded-lg border ${
+              !visibilityMap[paso.id] ? 'hidden' : ''
+            } ${isFieldGroup ? 'bg-gray-50' : 'bg-white'}`}
+          >
+            {/* Encabezado del campo */}
+            <div className="mb-3">
+              <label className="block font-medium text-gray-900">
+                {paso.text}
+                {paso.required && <span className="text-red-500 ml-1">*</span>}
+              </label>
+              
+              {/* Descripción adicional si existe */}
+              {paso.description && (
+                <p className="text-sm text-gray-500 mt-1">{paso.description}</p>
+              )}
+              
+              {/* Mostrar unidad para campos numéricos */}
+              {paso.unit && fieldType === FIELD_TYPES.NUMBER && (
+                <span className="text-sm text-gray-500 ml-1">({paso.unit})</span>
+              )}
             </div>
-          )}
-        </div>
-      ))}
+            
+            {/* Renderizado del campo */}
+            <div className={isFieldGroup ? 'pl-4 border-l-2 border-gray-200' : ''}>
+              <StepRenderer
+                paso={{
+                  ...paso,
+                  tipo_campo: fieldType,
+                  text: paso.text || paso.descripcion,
+                  obligatorio: paso.required || paso.obligatorio,
+                  unidad: paso.unit || paso.unidad
+                }}
+                value={responses[paso.id]}
+                onChange={(value) => updateResponse(paso.id, value)}
+                disabled={readOnly}
+                isVisible={visibilityMap[paso.id]}
+              />
+              
+              {/* Mensajes de validación */}
+              {validationMap[paso.id] && !validationMap[paso.id].isValid && (
+                <div className="mt-2 text-sm text-red-600 bg-red-50 p-2 rounded">
+                  {validationMap[paso.id].errors.join(', ')}
+                </div>
+              )}
+              
+              {/* Instrucciones adicionales */}
+              {!isFileType && !isCheckbox && paso.helpText && (
+                <p className="mt-1 text-xs text-gray-500">{paso.helpText}</p>
+              )}
+            </div>
+          </div>
+        );
+      })}
 
       {!readOnly && (
         <div className="flex justify-between mt-8">

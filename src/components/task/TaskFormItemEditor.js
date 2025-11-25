@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import TaskFormItemFields from './TaskFormItemFields';
-import { FIELD_TYPE_LABELS, DEFAULT_FIELD_TYPE } from '@/constants/fieldTypes';
+import { FIELD_TYPES, FIELD_TYPE_LABELS, DEFAULT_FIELD_TYPE } from '@/constants/fieldTypes';
+import { validateField } from '@/lib/validation';
 
 const ITEM_TYPES = Object.entries(FIELD_TYPE_LABELS).map(([value, label]) => ({
   value,
@@ -16,25 +17,51 @@ export default function TaskFormItemEditor({ item, onSave, onCancel, existingIte
     type: DEFAULT_FIELD_TYPE,
     required: false
   });
+  const [errors, setErrors] = useState({});
 
   const handleFieldChange = (field, value) => {
     setEditedItem(prev => ({ ...prev, [field]: value }));
   };
 
   const handleItemChange = (updatedItem) => {
-    // Asegurarse de que el tipo esté normalizado
-    const normalizedItem = {
-      ...updatedItem,
-      type: updatedItem.type,
-    };
-    setEditedItem(normalizedItem);
+    setEditedItem(updatedItem);
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    // Validar campo de texto
+    const textValidation = validateField(editedItem.text, {
+      type: FIELD_TYPES.TEXT,
+      obligatorio: true,
+      validacion: { max_len: 255 }
+    });
+    
+    if (!textValidation.isValid) {
+      newErrors.text = textValidation.errors[0] || 'El texto es obligatorio';
+    }
+
+    // Validar opciones para campos de selección
+    if (editedItem.type === FIELD_TYPES.SELECT) {
+      const optionsValidation = validateField(editedItem.options || [], {
+        type: FIELD_TYPES.SELECT,
+        obligatorio: true,
+        validacion: { min: 1 }
+      });
+      
+      if (!optionsValidation.isValid) {
+        newErrors.options = 'Debe agregar al menos una opción';
+      }
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSave = () => {
-    if (!editedItem.text.trim()) {
-      return;
+    if (validateForm()) {
+      onSave(editedItem);
     }
-    onSave(editedItem);
   };
 
   return (
