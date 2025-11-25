@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { NotificationsBar } from './NotificationsBar';
+import  NotificationsBar  from './NotificationsBar';
 
 const Notifications = ({ notificationIndicator }) => {
   return (

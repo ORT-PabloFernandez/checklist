@@ -50,17 +50,9 @@ export default function ColaboradorDashboard() {
           </p>
           <p className="text-gray-500">Usuario actual: <strong>{currentUser.name}</strong> ({currentUser.email})</p>
         </div>
-
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold">Mis History</h2>
-        </div>
-
-        <HistoryList />
-
         <div className="mb-6">
           <h2 className="text-xl font-semibold">Mis Asignaciones</h2>
         </div>
-
         <AssignmentList
           role="Colaborador"
           filterEmail={currentUser.email}
