@@ -8,7 +8,8 @@ const KEYS = {
   ASSIGNMENTS: 'checklist:assignments',
   EXECUTIONS: 'checklist:executions',
   CURRENT_USER: 'checklist:user',
-  TASKS: 'tasks'
+  TASKS: 'tasks',
+  NOTIFICATION_KEY: 'checklist:notifications'
 };
 
 /**
@@ -418,19 +419,19 @@ export async function listHistory() {
   try {
     const token = localStorage.getItem(TOKEN_KEY);
     const stored = await fetch(getEndpointUrl('EXECUTIONS'),
-    {
+      {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
+      }
+    );
+    if (stored && stored.status < 300) {
+      const data = await stored.json();
+      return data.data;
     }
-  );
-  if(stored && stored.status < 300) {
-    const data = await stored.json();
-    return data.data;
-  }
 
 
-    return  [];
+    return [];
   } catch (error) {
     console.error('Error loading assignments:', error);
     return [];
@@ -451,18 +452,18 @@ export function clearAuth() {
 }
 
 export async function updateAvatar(img, id) {
-    const token = localStorage.getItem(TOKEN_KEY);
-    const stored = await fetch(getEndpointUrl('USERS')+`/${id}/avatar`,
+  const token = localStorage.getItem(TOKEN_KEY);
+  const stored = await fetch(getEndpointUrl('USERS') + `/${id}/avatar`,
     {
       method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({img})
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ img })
     }
   );
-  if(stored.status >= 300){
+  if (stored.status >= 300) {
     throw new Error('Fallo al mandar imagen')
   }
   const result = await stored.json();
@@ -470,22 +471,88 @@ export async function updateAvatar(img, id) {
 }
 
 export async function getNotifications(id) {
-  try{
-  const token = localStorage.getItem(TOKEN_KEY);
-    const stored = await fetch(getEndpointUrl('USERS')+`/${id}/notifications`,
-    {
+  try {
+    const token = localStorage.getItem(TOKEN_KEY);
+    const stored = await fetch(getEndpointUrl('USERS') + `/${id}/notifications`,
+      {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
+      }
+    );
+    if (stored.status >= 300) {
+      throw new Error('Fallo al obtener la notificación')
     }
-  );
-  if(stored.status >= 300){
-    throw new Error('Fallo al obtener la notificación')
-  }
-  const result = await stored.json();
-  return result.data;
+    const result = await stored.json();
+    return result.data;
   } catch (error) {
     console.error(error);
+  }
+}
+
+
+export function addNotification(id, message, type) {
+  try {
+    const notifications = getLocalNotifications(id);
+    const newNotification = {
+      id: Date.now().toString(),
+      message,
+      type,
+      read: false,
+      timestamp: new Date().toISOString()
+    };
+    const allNotifications = JSON.parse(localStorage.getItem(KEYS.NOTIFICATION_KEY) || '{}');
+    allNotifications.push(newNotification);
+    localStorage.setItem(KEYS.NOTIFICATION_KEY, JSON.stringify(allNotifications));
+    return newNotification.id;
+  } catch (error) {
+    console.error('Error adding notification:', error);
+
+  }
+}
+
+export function getLocalNotifications(id) {
+  try {
+    const stored = localStorage.getItem(KEYS.NOTIFICATION_KEY);
+    if (!stored) return [];
+    const all = JSON.parse(stored);
+    return all
+      .filter(n => n.userId === id)
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+  } catch (error) {
+    console.error('Error getting notifications:', error);
+    return [];
+
+  }
+}
+
+export function clearNotifications(id) {
+  try {
+    const stored = localStorage.getItem(KEYS.NOTIFICATION_KEY);
+    if (!stored) return [];
+    const all = JSON.parse(stored);
+    return all
+      .filter(n => n.userId !== id)
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  } catch (error) {
+    console.error('Error clearing notifications:', error);
+    return [];
+  }
+}
+
+export function markNotificationsRead(id) {
+  try {
+    const stored = localStorage.getItem(KEYS.NOTIFICATION_KEY);
+    if (!stored) return;
+    const all = JSON.parse(stored);
+    const updated = all.filter(n => {
+      if (n.userId === id) return { ...n, read: true };
+      return n;
+    });
+    localStorage.setItem(KEYS.NOTIFICATION_KEY, JSON.stringify(updated));
+  } catch (error) {
+    console.error('Error clearing notifications:', error);
   }
 }

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { users } from '@/app/data/mocs';
-import { saveAssignment } from '../lib/storage';
+import { saveAssignment, addNotification } from '../lib/storage';
 
 export default function TaskAssignForm({ taskId }) {
   const router = useRouter();
@@ -58,6 +58,12 @@ export default function TaskAssignForm({ taskId }) {
 
       // Usar la API común de storage para mantener consistencia con listAssignments()
       const savedId = saveAssignment(newAssignment);
+
+      addNotification(
+        formData.asignadoA,
+        `nueva tarea asignada: "${newAssignment.checklistNombre}"`
+      );
+      window.dispatchEvent(new Event('notificationAdded'));
 
       // Notificar a listeners en la misma pestaña para que recarguen la lista
       window.dispatchEvent(new Event('assignmentsUpdated'));

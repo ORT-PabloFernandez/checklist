@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { getChecklistBySlug } from '../lib/loader';
 import { useExecutionState, useCurrentUser } from '../lib/state';
 import StepRenderer from './StepRenderer';
-import { updateAssignment } from '../lib/storage';
+import { updateAssignment, addNotification } from '../lib/storage';
 import { FIELD_TYPES } from '@/constants/fieldTypes';
 
 export default function ChecklistRunner({ assignmentId, readOnly = false }) {
@@ -86,6 +86,14 @@ export default function ChecklistRunner({ assignmentId, readOnly = false }) {
         };
 
         updateAssignment(updatedAssignment);
+        if (assignmentData.creadoPor) {
+          addNotification(
+            assignmentData.creadoPor,
+            `tarea enviada para revisión: "${checklist.nombre}" por ${currentUser?.email || 'un usuario'}`,
+            'complete'
+          );
+          window.dispatchEvent(new Event('notificationAdded'));
+        }
 
         // Redirect to summary
         router.push(`/summary/${executionId}`);
