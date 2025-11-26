@@ -9,6 +9,7 @@ import FieldFoto from './FieldFoto';
 import FieldArchivo from './FieldArchivo';
 import FieldFirma from './FieldFirma';
 import FieldGrupo from './FieldGrupo';
+import { FIELD_TYPES } from '@/constants/fieldTypes';
 
 export default function StepRenderer({
   paso,
@@ -21,9 +22,12 @@ export default function StepRenderer({
     return null;
   }
 
+  // Get field type, default to text if not specified
+  const fieldType = paso.tipo_campo || FIELD_TYPES.TEXT;
+  
   // Render field based on type
-  switch (paso.tipo_campo) {
-    case 'numero':
+  switch (fieldType) {
+    case FIELD_TYPES.NUMBER:
       return (
         <FieldNumero
           paso={paso}
@@ -32,7 +36,7 @@ export default function StepRenderer({
           disabled={disabled}
         />
       );
-    case 'texto':
+    case FIELD_TYPES.TEXT:
       return (
         <FieldTexto
           paso={paso}
@@ -41,7 +45,7 @@ export default function StepRenderer({
           disabled={disabled}
         />
       );
-    case 'select':
+    case FIELD_TYPES.SELECT:
       return (
         <FieldSelect
           paso={paso}
@@ -50,7 +54,7 @@ export default function StepRenderer({
           disabled={disabled}
         />
       );
-    case 'checkbox':
+    case FIELD_TYPES.CHECKBOX:
       return (
         <FieldCheckbox
           paso={paso}
@@ -59,7 +63,7 @@ export default function StepRenderer({
           disabled={disabled}
         />
       );
-    case 'fecha':
+    case FIELD_TYPES.DATE:
       return (
         <FieldFecha
           paso={paso}
@@ -68,7 +72,7 @@ export default function StepRenderer({
           disabled={disabled}
         />
       );
-    case 'foto':
+    case FIELD_TYPES.PHOTO:
       return (
         <FieldFoto
           paso={paso}
@@ -77,7 +81,7 @@ export default function StepRenderer({
           disabled={disabled}
         />
       );
-    case 'archivo':
+    case FIELD_TYPES.FILE:
       return (
         <FieldArchivo
           paso={paso}
@@ -86,7 +90,7 @@ export default function StepRenderer({
           disabled={disabled}
         />
       );
-    case 'firma':
+    case FIELD_TYPES.SIGNATURE:
       return (
         <FieldFirma
           paso={paso}
@@ -95,7 +99,7 @@ export default function StepRenderer({
           disabled={disabled}
         />
       );
-    case 'grupo':
+    case FIELD_TYPES.GROUP:
       return (
         <FieldGrupo
           paso={paso}
@@ -107,7 +111,7 @@ export default function StepRenderer({
     default:
       return (
         <div className="p-4 border border-yellow-400 bg-yellow-50 text-yellow-800 rounded">
-          Tipo de campo desconocido: {paso.tipo_campo}
+          Tipo de campo desconocido: {fieldType}
         </div>
       );
   }

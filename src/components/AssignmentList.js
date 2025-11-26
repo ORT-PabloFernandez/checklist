@@ -287,7 +287,7 @@ export default function AssignmentList({
                     <tr key={task.id} className="hover:bg-gray-50">
                       <td className="py-2 px-4 border-b">{task.nombre}</td>
                       <td className="py-2 px-4 border-b">{task.pasos ? task.pasos.length : 0}</td>
-                      <td className="py-2 px-4 border-b">{formatShortDate(task.fechaCreacion)}</td>
+                      <td className="py-2 px-4 border-b">{formatShortDate(task.createdAt)}</td>
                       <td className="py-2 px-4 border-b">
                         <button
                           onClick={() => handleTaskAction('edit', task)}

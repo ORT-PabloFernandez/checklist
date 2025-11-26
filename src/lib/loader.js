@@ -4,6 +4,8 @@
  * Utility for loading checklist data from JSON
  */
 
+import { FIELD_TYPES } from '@/constants/fieldTypes';
+
 /**
  * Loads the checklist package from the JSON file
  * @returns {Promise<Object>} The checklist package data
@@ -57,8 +59,9 @@ export async function getChecklistBySlug(slug) {
           objetivo: 'Tarea creada por el supervisor',
           pasos: task.pasos.map(paso => ({
             id: paso.id,
-            descripcion: paso.descripcion,
-            tipo_campo: paso.tipo || 'texto',
+            text: paso.text,
+            tipo_campo: paso.type || FIELD_TYPES.TEXT,
+            options: paso.options,
             obligatorio: true
           }))
         };

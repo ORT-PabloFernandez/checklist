@@ -1,5 +1,7 @@
 'use client';
 
+import { FIELD_TYPES } from "@/constants/fieldTypes";
+
 /**
  * Validation utilities for various field types in checklists
  */
@@ -46,7 +48,15 @@ export function validateTexto(value, validationRules = {}) {
   const errors = [];
   let isValid = true;
   
-  if (!value) {
+  // Check if required
+  if (validationRules.obligatorio && (!value || !value.trim())) {
+    errors.push('Este campo es obligatorio');
+    isValid = false;
+    return { isValid, errors };
+  }
+  
+  // If not required and empty, it's valid
+  if (!value || !value.trim()) {
     return { isValid, errors };
   }
   
@@ -103,30 +113,12 @@ export function validateFecha(value, validationRules = {}) {
   }
 
   const date = new Date(value);
-  const today = new Date();
   
   // Check if it's a valid date
   if (isNaN(date.getTime())) {
     errors.push('La fecha no es válida');
     isValid = false;
     return { isValid, errors };
-  }
-  
-  // Check if future dates are not allowed
-  if (validationRules.no_futuras && date > today) {
-    errors.push('No se permiten fechas futuras');
-    isValid = false;
-  }
-  
-  // Check max age in days
-  if (validationRules.max_antiguedad_dias) {
-    const maxAgeDate = new Date();
-    maxAgeDate.setDate(today.getDate() - validationRules.max_antiguedad_dias);
-    
-    if (date < maxAgeDate) {
-      errors.push(`La fecha no puede ser más antigua de ${validationRules.max_antiguedad_dias} días`);
-      isValid = false;
-    }
   }
 
   return { isValid, errors };
@@ -188,27 +180,28 @@ export function validateGrupo(groupValues, subfields) {
     const value = groupValues[field.nombre];
     let fieldResult;
     
-    switch(field.tipo_campo) {
-      case 'numero':
+    const fieldType = field.tipo_campo || field.type;
+    switch(fieldType) {
+      case FIELD_TYPES.NUMBER:
         fieldResult = validateNumero(value, field.validacion);
         break;
-      case 'texto':
+      case FIELD_TYPES.TEXT:
         fieldResult = validateTexto(value, field.validacion);
         break;
-      case 'select':
+      case FIELD_TYPES.SELECT:
         fieldResult = validateSelect(value, field.valores);
         break;
-      case 'checkbox':
+      case FIELD_TYPES.CHECKBOX:
         fieldResult = validateCheckbox(value);
         break;
-      case 'fecha':
+      case FIELD_TYPES.DATE:
         fieldResult = validateFecha(value, field.validacion);
         break;
-      case 'foto':
-      case 'archivo':
+      case FIELD_TYPES.PHOTO:
+      case FIELD_TYPES.FILE:
         fieldResult = validateFile(value);
         break;
-      case 'firma':
+      case FIELD_TYPES.SIGNATURE:
         fieldResult = validateFirma(value);
         break;
       default:
@@ -235,25 +228,80 @@ export function validateGrupo(groupValues, subfields) {
 export function validateField(value, field) {
   if (!field) return { isValid: false, errors: ['Campo indefinido'] };
   
-  switch(field.tipo_campo) {
-    case 'numero':
+  const fieldType = field.tipo_campo || field.type;
+  switch(fieldType) {
+    case FIELD_TYPES.NUMBER:
       return validateNumero(value, field.validacion);
-    case 'texto':
+    case FIELD_TYPES.TEXT:
       return validateTexto(value, field.validacion);
-    case 'select':
+    case FIELD_TYPES.SELECT:
       return validateSelect(value, field.valores);
-    case 'checkbox':
+    case FIELD_TYPES.CHECKBOX:
       return validateCheckbox(value);
-    case 'fecha':
+    case FIELD_TYPES.DATE:
       return validateFecha(value, field.validacion);
-    case 'foto':
-    case 'archivo':
+    case FIELD_TYPES.PHOTO:
+    case FIELD_TYPES.FILE:
       return validateFile(value);
-    case 'firma':
+    case FIELD_TYPES.SIGNATURE:
       return validateFirma(value);
-    case 'grupo':
+    case FIELD_TYPES.GROUP:
       return validateGrupo(value, field.campos);
     default:
       return { isValid: true, errors: [] };
   }
+}
+
+/**
+ * Validates a task form
+ * @param {Object} formData - The form data to validate
+ * @returns {Object} - Validation result with isValid and errors object
+ */
+export function validateTaskForm(formData) {
+  const errors = {};
+  let isValid = true;
+
+  // Validate nombre (required) - using validateTexto with obligatorio rule
+  const nombreValidation = validateTexto(formData.nombre, { obligatorio: true });
+  if (!nombreValidation.isValid) {
+    errors.nombre = nombreValidation.errors[0] || 'El nombre de la tarea es obligatorio';
+    isValid = false;
+  }
+
+  // Validate pasos (must have at least one)
+  if (!formData.pasos || formData.pasos.length === 0) {
+    errors.pasos = 'Debes agregar al menos un paso';
+    isValid = false;
+  } else {
+    const pasoErrors = [];
+    
+    // Validate each paso
+    formData.pasos.forEach((paso, index) => {
+      // Validate paso text
+      const textValidation = validateTexto(paso.text, { obligatorio: true });
+      if (!textValidation.isValid) {
+        pasoErrors.push(`Paso ${index + 1}: ${textValidation.errors[0] || 'debe tener un texto'}`);
+        isValid = false;
+      }
+
+      // Validate paso type/tipo
+      const pasoType = paso.type;
+      if (!pasoType || !Object.values(FIELD_TYPES).includes(pasoType)) {
+        pasoErrors.push(`Paso ${index + 1}: tiene un tipo inválido (${pasoType})`);
+        isValid = false;
+      }
+
+      // Validate select type must have options
+      if (pasoType === FIELD_TYPES.SELECT && (!paso.options || paso.options.length === 0)) {
+        pasoErrors.push(`Paso ${index + 1} (select): debe tener al menos una opción`);
+        isValid = false;
+      }
+    });
+
+    if (pasoErrors.length > 0) {
+      errors.pasos = pasoErrors.join('. ');
+    }
+  }
+
+  return { isValid, errors };
 }
