@@ -59,8 +59,9 @@ export async function getChecklistBySlug(slug) {
           objetivo: 'Tarea creada por el supervisor',
           pasos: task.pasos.map(paso => ({
             id: paso.id,
-            descripcion: paso.descripcion,
+            text: paso.text,
             tipo_campo: paso.type || FIELD_TYPES.TEXT,
+            options: paso.options,
             obligatorio: true
           }))
         };

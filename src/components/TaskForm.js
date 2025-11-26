@@ -76,8 +76,6 @@ export default function TaskForm({ taskId = null }) {
     const validation = validateTaskForm(formData);
     if (!validation.isValid) {
       setErrors(validation.errors);
-      console.log('errores del formulario ' + JSON.stringify(errors))
-      console.log('Validaciones ' + JSON.stringify(validation))
       return;
     }
 

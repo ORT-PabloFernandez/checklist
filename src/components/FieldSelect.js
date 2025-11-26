@@ -37,7 +37,7 @@ export default function FieldSelect({
         `}
       >
         <option value="">Seleccione una opción</option>
-        {paso?.valores?.map((option, index) => (
+        {paso?.options?.map((option, index) => (
           <option key={index} value={option}>
             {option}
           </option>

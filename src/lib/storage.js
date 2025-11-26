@@ -426,7 +426,6 @@ export async function listHistory() {
   );
   if(stored && stored.status < 300) {
     const data = await stored.json();
-    console.log(data.data);
     return data.data;
   }
 
@@ -444,7 +443,6 @@ export function clearAuth() {
     localStorage.removeItem('authToken');
     localStorage.removeItem('userSession');
     localStorage.removeItem('token');
-    console.log('✅ Todos los datos de autenticación limpiados');
     return true;
   } catch (error) {
     console.error('Error clearing authentication data:', error);

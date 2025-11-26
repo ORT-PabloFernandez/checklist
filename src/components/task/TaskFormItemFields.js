@@ -118,7 +118,7 @@ function OptionsEditor({ options, onChange }) {
           type="text"
           value={newOption}
           onChange={(e) => setNewOption(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAdd())}
+          onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAdd())}
           className="flex-1 border rounded px-3 py-2"
           placeholder="Agregar opción"
         />
