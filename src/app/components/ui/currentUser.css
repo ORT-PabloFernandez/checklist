@@ -106,15 +106,21 @@
 /* Burbuja roja del contador */
 .notification-badge {
   position: absolute;
-  top: 4px;
-  right: 4px;
+  top: -3px;
+  right: -3px;
   background-color: #ef4444;
   color: white;
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   font-weight: bold;
   border-radius: 9999px;
   padding: 2px 6px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   line-height: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Dropdown de notificaciones */
@@ -184,15 +190,5 @@
 
 .notification-icon {
   font-size: 1.5rem;
-}
-
-/* Punto rojo */
-.notification-badge {
-  position: absolute;
-  top: -3px;
-  right: -3px;
-  width: 10px;
-  height: 10px;
-  background-color: red;
-  border-radius: 50%;
+  position: relative;
 }
