@@ -29,6 +29,7 @@ export default function ExecutionSummary({ execution }) {
               nombre: task.nombre,
               pasos: task.pasos.map(paso => ({
                 id: paso.id,
+                text: paso.text,
                 tipo_campo: paso.type || paso.tipo_campo || 'texto',
                 obligatorio: true
               }))
@@ -55,10 +56,14 @@ export default function ExecutionSummary({ execution }) {
       {checklist.pasos.map(paso => {
         const response = execution.respuestas.find(r => r.pasoId === paso.id);
         if (!response || !response.visible) return null;
-        
+        console.log("paso", paso);
+        console.log("response", response);
         return (
           <div key={paso.id} className="border rounded p-3 bg-gray-50">
-            <div className="flex items-start justify-between mb-2">
+            <div className="flex items-start mb-2">
+              <label className="block font-medium text-gray-900">
+                {paso.text}
+              </label>
               {response.valido ? (
                 <span className="text-green-600 ml-2">✓</span>
               ) : (
@@ -71,10 +76,10 @@ export default function ExecutionSummary({ execution }) {
                 {response.errores.join(', ')}
               </div>
             )}
-
             <div className="text-gray-900">
               <StepRenderer
                 paso={paso}
+                descripcion={paso.text}
                 value={response.valor}
                 onChange={() => {}}
                 disabled={true}

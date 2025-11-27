@@ -36,7 +36,7 @@ export default function FieldSelect({
           ${disabled ? 'bg-gray-100 text-gray-600' : ''}
         `}
       >
-        <option value="">Seleccione una opción</option>
+        <option value="">{value ? value : "Seleccione una opción"}</option>
         {paso?.options?.map((option, index) => (
           <option key={index} value={option}>
             {option}
