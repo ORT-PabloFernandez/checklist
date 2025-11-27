@@ -12,15 +12,6 @@ export default function ColaboradorDashboard() {
   const router = useRouter();
   const { currentUser } = useCurrentUser();
 
-
-  // // VIEJO CÓDIGO
-  // // Redirect if not a colaborador (using useEffect to avoid state updates during render)
-  // useEffect(() => {
-  //   if (currentUser && currentUser.role !== 'Colaborador') {
-  //     router.push(`/${currentUser.role.toLowerCase()}`);
-  //   }
-  // }, [currentUser, router]);
-
   const handleActionClick = (action, assignment) => {
     if (action === 'execute') {
       router.push(`/colaborador/exec/${assignment.id}`);
