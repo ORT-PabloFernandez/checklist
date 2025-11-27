@@ -6,8 +6,12 @@ import {
   getAssignment,
   saveExecution,
   getExecution,
-  initializeDefaultAssignments, 
-  listHistory} from './storage';
+  initializeDefaultAssignments,
+  listHistory,
+  getLocalNotifications,
+  markNotificationsRead,
+  removeNotification
+} from './storage';
 import { isPasoVisible, getVisibilityMap } from './conditions';
 import { validateField } from './validation';
 
@@ -86,12 +90,12 @@ export function useAssignments() {
     setAssignments(data);
     setLoading(false);
   }, []);
-  
+
   // Refresh assignments (public method to refresh from outside)
   const refreshAssignments = useCallback(() => {
     loadAssignments();
   }, [loadAssignments]);
-  
+
 
   // Create a new assignment
   const createAssignment = useCallback((assignment) => {
@@ -330,22 +334,70 @@ export function useExecutionState(assignmentId, checklist) {
 export function useHistory() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Load assignments on mount
   useEffect(() => {
     // Load assignments from storage
-  const loadHistory = async () => {
-    setLoading(true);
-    const data = await listHistory();
-    setHistory(data);
-    setLoading(false);
-  }
-  loadHistory();
+    const loadHistory = async () => {
+      setLoading(true);
+      const data = await listHistory();
+      setHistory(data);
+      setLoading(false);
+    }
+    loadHistory();
   }, []);
 
   return {
     history,
     loading,
+  };
+}
+
+export function useNotifications() {
+  const { currentUser } = useCurrentUser();
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const loadNotifications = useCallback(() => {
+    if (currentUser?.email) {
+      const data = getLocalNotifications(currentUser.email);
+      setNotifications(data);
+      setUnreadCount(data.filter(n => !n.read).length);
+    }
+
+
+  }, [currentUser]);
+  useEffect(() => {
+    loadNotifications();
+
+    const handleUpdate = () => loadNotifications();
+    window.addEventListener('notificationsUpdated', handleUpdate);
+
+    return () => {
+      window.removeEventListener('notificationsUpdated', handleUpdate);
+    };
+  }, [loadNotifications]);
+
+  const markAsRead = () => {
+    if (currentUser?.email) {
+      markNotificationsRead(currentUser.email);
+      loadNotifications();
+      window.dispatchEvent(new Event('notificationsUpdated'));
+
+    }
+  };
+
+  const deleteNotification = useCallback((notificationId) => {
+    removeNotification(notificationId);
+    loadNotifications();
+    window.dispatchEvent(new Event('notificationsUpdated'));
+
+  }, [loadNotifications]);
+  return {
+    notifications,
+    unreadCount,
+    markAsRead,
+    deleteNotification
   };
 }
 
