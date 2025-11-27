@@ -492,33 +492,39 @@ export async function getNotifications(id) {
 }
 
 
-export function addNotification(id, message, type) {
+export function addNotification(userId, message, type) {
   try {
-    const notifications = getLocalNotifications(id);
+    const recipiente = userId || 'unknown';
+
+    const stored = localStorage.getItem(KEYS.NOTIFICATION_KEY);
+    const notifications = stored ? JSON.parse(stored) : [];
+
     const newNotification = {
       id: Date.now().toString(),
+      userId: recipiente,
       message,
       type,
       read: false,
       timestamp: new Date().toISOString()
     };
-    const allNotifications = JSON.parse(localStorage.getItem(KEYS.NOTIFICATION_KEY) || '{}');
-    allNotifications.push(newNotification);
-    localStorage.setItem(KEYS.NOTIFICATION_KEY, JSON.stringify(allNotifications));
-    return newNotification.id;
+
+    notifications.push(newNotification);
+    localStorage.setItem(KEYS.NOTIFICATION_KEY, JSON.stringify(notifications));
+    return true;
   } catch (error) {
     console.error('Error adding notification:', error);
+    return false;
 
   }
 }
 
-export function getLocalNotifications(id) {
+export function getLocalNotifications(userId) {
   try {
     const stored = localStorage.getItem(KEYS.NOTIFICATION_KEY);
     if (!stored) return [];
     const all = JSON.parse(stored);
     return all
-      .filter(n => n.userId === id)
+      .filter(n => n.userId && n.userId.toLowerCase() === userId.toLowerCase())
       .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
   } catch (error) {

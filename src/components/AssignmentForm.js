@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAssignments, useCurrentUser } from '../lib/state';
 import { loadPackage } from '../lib/loader';
 import { slugify } from '../lib/utils';
+import { addNotification } from '@/lib/storage';
 
 export default function AssignmentForm({ onSuccess }) {
   const { currentUser } = useCurrentUser();
@@ -11,7 +12,7 @@ export default function AssignmentForm({ onSuccess }) {
   const [checklists, setChecklists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [formData, setFormData] = useState({
     checklistSlug: '',
     checklistNombre: '',
@@ -31,7 +32,7 @@ export default function AssignmentForm({ onSuccess }) {
         const jsonChecklists = data.checklists || [];
         const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
         const allChecklists = [...jsonChecklists, ...tasks];
-        
+
         setChecklists(allChecklists);
         setError(null);
       } catch (err) {
@@ -41,13 +42,13 @@ export default function AssignmentForm({ onSuccess }) {
         setLoading(false);
       }
     }
-    
+
     fetchChecklists();
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     setFormData(prev => {
       // Special handling for checklist selection
       if (name === 'checklistSlug' && value) {
@@ -61,7 +62,7 @@ export default function AssignmentForm({ onSuccess }) {
             checklistNombre: selectedTask ? selectedTask.nombre : ''
           };
         }
-        
+
         // Si no es tarea, busco el checklist en el JSON estatico
         const selectedChecklist = checklists.find(c => slugify(c.nombre) === value);
         return {
@@ -70,17 +71,17 @@ export default function AssignmentForm({ onSuccess }) {
           checklistNombre: selectedChecklist ? selectedChecklist.nombre : ''
         };
       }
-      
+
       return {
         ...prev,
         [name]: value
       };
     });
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!formData.checklistSlug || !formData.asignadoA || !formData.fechaVencimiento) {
       setError('Por favor complete todos los campos obligatorios');
       return;
@@ -95,9 +96,18 @@ export default function AssignmentForm({ onSuccess }) {
         estado: 'Asignada',
         rechazos: []
       };
-      
+
       createAssignment(newAssignment);
-      
+
+      if (formData.asignadoA) {
+        addNotification(
+          formData.asignadoA,
+          `se te ha asignado una nueva checklist: "${newAssignment.checklistNombre}"`,
+          `assign`
+        );
+        window.dispatchEvent(new Event('notificationUpdated'));
+      }
+
       // Reset form
       setFormData({
         checklistSlug: '',
@@ -107,12 +117,12 @@ export default function AssignmentForm({ onSuccess }) {
         prioridad: 'Media',
         notas: ''
       });
-      
+
       setError(null);
-      
+
       // Notify parent of success
       if (onSuccess) onSuccess();
-      
+
     } catch (err) {
       console.error('Error creating assignment:', err);
       setError('No se pudo crear la asignación');
@@ -122,13 +132,13 @@ export default function AssignmentForm({ onSuccess }) {
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded shadow-sm p-4 border">
       <h3 className="text-lg font-medium mb-4">Nueva Asignación</h3>
-      
+
       {error && (
         <div className="bg-red-50 text-red-600 p-3 rounded mb-4 text-sm">
           {error}
         </div>
       )}
-      
+
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-medium mb-1">
           Checklist <span className="text-red-500">*</span>
@@ -147,7 +157,7 @@ export default function AssignmentForm({ onSuccess }) {
             // Verifica si es una tarea por el id ya que todas las tareas tienen un id y los checklists no
             const isTask = checklist.id && checklist.pasos;
             const value = isTask ? `task-${checklist.id}` : slugify(checklist.nombre);
-            
+
             return (
               <option key={index} value={value}>
                 {checklist.nombre}
@@ -156,7 +166,7 @@ export default function AssignmentForm({ onSuccess }) {
           })}
         </select>
       </div>
-      
+
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-medium mb-1">
           Asignado a <span className="text-red-500">*</span>
@@ -171,7 +181,7 @@ export default function AssignmentForm({ onSuccess }) {
           required
         />
       </div>
-      
+
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-medium mb-1">
           Fecha Vencimiento <span className="text-red-500">*</span>
@@ -186,7 +196,7 @@ export default function AssignmentForm({ onSuccess }) {
           min={new Date().toISOString().split('T')[0]} // No past dates
         />
       </div>
-      
+
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-medium mb-1">
           Prioridad
@@ -202,7 +212,7 @@ export default function AssignmentForm({ onSuccess }) {
           <option value="Baja">Baja</option>
         </select>
       </div>
-      
+
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-medium mb-1">
           Notas
@@ -216,7 +226,7 @@ export default function AssignmentForm({ onSuccess }) {
           rows="3"
         />
       </div>
-      
+
       <div className="flex justify-end">
         <button
           type="submit"
