@@ -139,6 +139,8 @@ export default function AssignmentList({
       handleDeleteTask(task.id);
     } else if (action === 'assign') {
       router.push(`/task/assign/${task.id}`);
+    } else if (action === 'edit'){
+      router.push(`/task/edit/${task.id}`);
     }
   };
 
