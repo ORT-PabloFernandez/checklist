@@ -562,3 +562,15 @@ export function markNotificationsRead(id) {
     console.error('Error clearing notifications:', error);
   }
 }
+
+export function removeNotification(notificationId) {
+  try {
+    const stored = localStorage.getItem(KEYS.NOTIFICATION_KEY);
+    if (!stored) return;
+    const allNotifications = JSON.parse(stored);
+    const updatedNotifications = allNotifications.filter(n => n.id !== notificationId);
+    localStorage.setItem(KEYS.NOTIFICATION_KEY, JSON.stringify(updatedNotifications));
+  } catch (error) {
+    console.error('Error removing notification:', error);
+  }
+} 

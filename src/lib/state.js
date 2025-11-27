@@ -9,7 +9,8 @@ import {
   initializeDefaultAssignments,
   listHistory,
   getLocalNotifications,
-  markNotificationsRead
+  markNotificationsRead,
+  removeNotification
 } from './storage';
 import { isPasoVisible, getVisibilityMap } from './conditions';
 import { validateField } from './validation';
@@ -385,10 +386,18 @@ export function useNotifications() {
 
     }
   };
+
+  const deleteNotification = useCallback((notificationId) => {
+    removeNotification(notificationId);
+    loadNotifications();
+    window.dispatchEvent(new Event('notificationsUpdated'));
+
+  }, [loadNotifications]);
   return {
     notifications,
     unreadCount,
-    markAsRead
+    markAsRead,
+    deleteNotification
   };
 }
 

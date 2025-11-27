@@ -9,7 +9,7 @@ import '../ui/currentUser.css'; // O tu CSS de notificaciones
 
 const NotificationsBar = () => {
   const [open, setOpen] = useState(false);
-  const { notifications, unreadCount, markAsRead } = useNotifications();
+  const { notifications, unreadCount, markAsRead, deleteNotification } = useNotifications();
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -29,6 +29,11 @@ const NotificationsBar = () => {
       markAsRead();
     }
     setOpen(!open);
+  };
+
+  const handleNotificationClick = (e, id) => {
+    e.stopPropagation();
+    deleteNotification(id);
   };
   return (
     <div className="notification-container" ref={dropdownRef}>
@@ -51,7 +56,11 @@ const NotificationsBar = () => {
             <div className="no-notifications">No hay notificaciones</div>
           ) : (
             notifications.map((notif) => (
-              <div key={notif.id} className="notification-item">
+              <div key={notif.id} className="notification-item"
+                onClick={(e) => handleNotificationClick(e, notif.id)}
+                title="click para eliminar notificación"
+              >
+
                 <div className="notification-title">
                   {notif.type === 'assign' ? 'Nueva Asignación' : 'Tarea Completada'}
                 </div>
