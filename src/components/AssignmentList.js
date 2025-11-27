@@ -142,6 +142,11 @@ export default function AssignmentList({
     }
   };
 
+  // Verificar si una tarea ya está asignada
+  const isTaskAssigned = (taskId) => {
+    return assignments.some(assignment => assignment.checklistSlug === `task-${taskId}`);
+  };
+
   const handleDeleteTask = (taskId) => {
     if (!showTaskManagement) return;
     if (window.confirm('¿Estás seguro de que deseas eliminar esta tarea?')) {
@@ -291,13 +296,25 @@ export default function AssignmentList({
                       <td className="py-2 px-4 border-b">
                         <button
                           onClick={() => handleTaskAction('edit', task)}
-                          className="px-2 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+                          disabled={isTaskAssigned(task.id)}
+                          className={`px-2 py-1 rounded text-sm ${
+                            isTaskAssigned(task.id)
+                              ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                              : 'bg-blue-600 text-white hover:bg-blue-700'
+                          }`}
+                          title={'Editar tarea'}
                         >
                           Editar
                         </button>
                         <button
                           onClick={() => handleTaskAction('delete', task)}
-                          className="ml-2 px-2 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700"
+                          disabled={isTaskAssigned(task.id)}
+                          className={`ml-2 px-2 py-1 rounded text-sm ${
+                            isTaskAssigned(task.id)
+                              ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                              : 'bg-red-600 text-white hover:bg-red-700'
+                          }`}
+                          title={'Eliminar tarea'}
                         >
                           Eliminar
                         </button>
